@@ -79,24 +79,24 @@ jobs:
           
           function generateMarkdownTemplate(item, feedName, category) {
             const publishDate = new Date(item.pubDate);
-            const filename = `${formatDate(publishDate)}-${sanitizeFilename(item.title)}.md`;
+            const filename = \`\${formatDate(publishDate)}-\${sanitizeFilename(item.title)}.md\`;
             
-            const frontMatter = `---
+            const frontMatter = \`\${'---'}
 layout: "post"
-title: "${item.title.replace(/"/g, '\\"')}"
-author: "${item.creator || feedName}"
-description: "${(item.contentSnippet || item.content || '').substring(0, 200).replace(/"/g, '\\"')}..."
+title: "\${item.title.replace(/"/g, '\\\\"')}"
+author: "\${item.creator || feedName}"
+description: "\${(item.contentSnippet || item.content || '').substring(0, 200).replace(/"/g, '\\\\"')}..."
 excerpt_separator: <!--excerpt_end-->
-canonical_url: "${item.link}"
----`;
+canonical_url: "\${item.link}"
+\${'---'}\`;
             
-            const content = `${item.contentSnippet || item.content || item.title}<!--excerpt_end-->
+            const content = \`\${item.contentSnippet || item.content || item.title}<!--excerpt_end-->
           
-[Read the full article](${item.link})`;
+[Read the full article](\${item.link})\`;
             
             return {
               filename: filename,
-              content: frontMatter + '\n\n' + content
+              content: frontMatter + '\\n\\n' + content
             };
           }
           
