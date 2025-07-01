@@ -35,7 +35,7 @@ function New-GitHubIssue {
         return $response
     }
     catch {
-        Write-Error "Failed to create issue: $_"
+        Write-Host "Failed to create issue: $_"
         throw
     }
 }
@@ -102,7 +102,7 @@ try {
     # Read RSS feeds configuration
     $feedsConfigPath = ".github/rss-feeds.json"
     if (-not (Test-Path $feedsConfigPath)) {
-        Write-Error "RSS feeds configuration file not found: $feedsConfigPath"
+        Write-Host "RSS feeds configuration file not found: $feedsConfigPath"
         exit 1
     }
     
@@ -129,7 +129,7 @@ try {
                 $items = $response.feed.entry
             }
 
-            Write-Information "Found $($items.Count) items in feed: $($feedConfig.name)"
+            Write-Host "Found $($items.Count) items in feed: $($feedConfig.name)"
             
             # Get latest 3 items
             $latestItems = $items | Select-Object -First 3
@@ -142,7 +142,7 @@ try {
                 } elseif ($item.published) {
                     $pubDate = [datetime]$item.published
                 } else {
-                    Write-Warning "No publication date found for item: $($item.title)"
+                    Write-Host "No publication date found for item: $($item.title)"
                     continue
                 }
                 
@@ -195,7 +195,7 @@ $($itemObj.contentSnippet)
                         Write-Host "Created issue #$($issue.number) for: $($itemObj.title)"
                     }
                     catch {
-                        Write-Error "Failed to create issue for $($itemObj.title): $_"
+                        Write-Host "Failed to create issue for $($itemObj.title): $_"
                     }
                 }
                 else {
@@ -204,13 +204,13 @@ $($itemObj.contentSnippet)
             }
         }
         catch {
-            Write-Error "Failed to process feed $($feedConfig.name): $_"
+            Write-Host "Failed to process feed $($feedConfig.name): $_"
         }
     }
     
     Write-Host "RSS Feed Monitor completed successfully"
 }
 catch {
-    Write-Error "RSS Feed Monitor failed: $_"
+    Write-Host "RSS Feed Monitor failed: $_"
     exit 1
 }
