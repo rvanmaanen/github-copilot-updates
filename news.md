@@ -5,7 +5,7 @@ description: "Latest updates and articles related to GitHub Copilot."
 excerpt_separator: <!--excerpt_end-->
 order: 1
 ---
-<!-- 
+
 {%- assign date_format = "%Y-%m-%d" -%}
 
     <ul class="post-list">
@@ -19,5 +19,5 @@ order: 1
         {%- endif -%}
         </li>
         {%- endfor -%}
-    </ul> -->
+    </ul>
 
