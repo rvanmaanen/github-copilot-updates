@@ -1,5 +1,6 @@
 [
     {
+        "width": "100%",
         "plans": [
             {
                 "name": "Free",
@@ -8,18 +9,6 @@
                     "50 agent mode or chat requests per month",
                     "2,000 completions per month",
                     "Access to Claude 3.5 Sonnet, GPT-4.1, and more"
-                ]
-            },
-            {
-                "name": "Pro",
-                "description": "Unlimited completions and chats with access to more models",
-                "benefits": [
-                    "Everything in Free",
-                    "Unlimited agent mode and chats with GPT-4.1",
-                    "Unlimited code completions",
-                    "Access to code review, Claude 3.7/4 Sonnet, Gemini 2.5 Pro, and more",
-                    "6x more premium requests than Copilot Free",
-                    "Coding agent (preview)"
                 ]
             }
         ],
@@ -231,7 +220,20 @@
         ]
     },
     {
+        "width": "50%",
         "plans": [
+            {
+                "name": "Pro",
+                "description": "Unlimited completions and chats with access to more models",
+                "benefits": [
+                    "Everything in Free",
+                    "Unlimited agent mode and chats with GPT-4.1",
+                    "Unlimited code completions",
+                    "Access to code review, Claude 3.7/4 Sonnet, Gemini 2.5 Pro, and more",
+                    "6x more premium requests than Copilot Free",
+                    "Coding agent (preview)"
+                ]
+            },
             {
                 "name": "Business",
                 "description": "For teams and organizations",
@@ -243,15 +245,6 @@
                     "Policy management",
                     "Access management",
                     "Audit logs"
-                ]
-            },
-            {
-                "name": "Pro+",
-                "description": "Maximum flexibility and model choice",
-                "benefits": [
-                    "Everything in Pro",
-                    "Access to all models, including Claude Opus 4, o3, and GPT-4.5",
-                    "30x more premium requests than Copilot Free to use the latest models, with the option to buy more"
                 ]
             }
         ],
@@ -283,7 +276,17 @@
         ]
     },
     {
+        "width": "50%",
         "plans": [
+            {
+                "name": "Pro+",
+                "description": "Maximum flexibility and model choice",
+                "benefits": [
+                    "Everything in Pro",
+                    "Access to all models, including Claude Opus 4, o3, and GPT-4.5",
+                    "30x more premium requests than Copilot Free to use the latest models, with the option to buy more"
+                ]
+            },
             {
                 "name": "Enterprise",
                 "description": "Enterprise-grade features for large organizations",

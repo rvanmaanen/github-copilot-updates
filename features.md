@@ -1,62 +1,74 @@
 ---
 layout: "page"
 title: "Copilot Feature Highlights"
-permalink: "/features/"
+description: "An overview of GitHub Copilot plans as of June the 27th 2025, combining official features with example videos."
+order: 3
 ---
 
 This page provides a comprehensive overview of GitHub Copilot plans as of June the 27th 2025, combining official features with example videos.
 
 <div class="features-vertical-container">
-  <!-- GHES Filter Toggle -->
-  <div class="ghes-filter">
-    <button id="toggleGhes" class="ghes-toggle-btn">Toggle GHES supported features</button>
-  </div>
 
   <!-- Subscription Tiers Container -->
-  {% for entry in site.data.copilot_plans %}
-  <div class="subscription-tiers-container">
-      {% for plan in entry.plans %}
-      <div class="subscription-section">
-        <h2>{{ plan.name }}</h2>
-        <p>{{ plan.description }}</p>
-        <ul>
-          {% for benefit in plan.benefits %}
-          <li>{{ benefit }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endfor %}
-  </div>
-  
-  <!-- Features for this subscription tier -->
-  <div class="tier-videos">
-    <div class="videos-grid">
-      {% for feature in entry.features %}
-      <div class="video-card" data-ghes="{{ feature.ghes_support }}">
-        <h3>{{ feature.title }}</h3>
-        <!-- <p>{{ feature.description }}</p> -->
-        <div class="video-link">
-          {% if feature.videoUrl != "" %}
-            <a href="{{ feature.videoUrl }}" target="_blank">View Demo Video</a>
-          {% else %}
-            <p>Video coming soon</p>
-          {% endif %}
+  <div class="subscription-wrapper">
+    {% for entry in site.data.copilot_plans %}
+    <div class="subscription-tiers-container {% if entry.width == '100%' %}full-width{% else %}half-width{% endif %}">
+        {% for plan in entry.plans %}
+        <div class="subscription-section">
+          <h2>{{ plan.name }}</h2>
+          <p>{{ plan.description }}</p>
+          <ul>
+            {% for benefit in plan.benefits %}
+            <li>{{ benefit }}</li>
+            {% endfor %}
+          </ul>
+          <div class="tier-link">
+            <a href="#videos-{% for plan in entry.plans %}{{ plan.name | downcase | replace: ' ', '-' | replace: '+', 'plus' }}{% unless forloop.last %}-{% endunless %}{% endfor %}">View Features →</a>
+          </div>
         </div>
-        <div class="ghes-support">
-          {% if feature.ghes_support %}
-            <span class="ghes-badge-supported">GHES Supported</span>
-          {% else %}
-            <span class="ghes-badge-unsupported">Not GHES Supported</span>
-          {% endif %}
-        </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
     </div>
+    {% endfor %}
   </div>
   
-  {% if forloop.last == false %}
-  <hr class="entry-separator" />
-  {% endif %}
+  {% for entry in site.data.copilot_plans %}
+    <div id="videos-{% for plan in entry.plans %}{{ plan.name | downcase | replace: ' ', '-' | replace: '+', 'plus' }}{% unless forloop.last %}-{% endunless %}{% endfor %}">
+      <h1 style="margin-bottom: 0px">
+        {% for plan in entry.plans %}{{ plan.name }}{% unless forloop.last %} & {% endunless %}{% endfor %}
+      </h1>
+      <hr />
+    </div>
+    
+    <!-- Filter buttons for this section -->
+    <div class="ghes-filter section-filter">
+      <button class="ghes-toggle-btn">Show features with GHES support</button>
+      <button class="video-toggle-btn">Show features with videos</button>
+    </div>
+    
+    <!-- Features for this subscription tier -->
+    <div class="tier-videos">
+      <div class="videos-grid">
+        {% for feature in entry.features %}
+        <div class="video-card" data-ghes="{{ feature.ghes_support }}"{% if feature.videoUrl != "" %} data-video-url="{{ feature.videoUrl }}"{% endif %}>
+          <div class="video-header">
+            <h3>{{ feature.title }}</h3>
+            <div class="video-icons">
+              {% if feature.ghes_support %}
+                <span class="ghes-icon ghes-supported" title="GHES Supported">✓</span>
+              {% else %}
+                <span class="ghes-icon ghes-not-supported" title="Not GHES Supported">✕</span>
+              {% endif %}
+              {% if feature.videoUrl != "" %}
+                <span class="play-icon" title="View Demo Video">
+                  <span class="play-triangle"></span>
+                </span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
   {% endfor %}
 
 </div>
@@ -69,14 +81,20 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   gap: 10px;
 }
 
+/* Wrapper for subscription containers */
+.subscription-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
 /* GHES Filter Button */
 .ghes-filter {
   text-align: left;
 }
 
-.ghes-toggle-btn {
-  background-color: #0366d6;
-  color: white;
+.ghes-toggle-btn, .video-toggle-btn {
   border: none;
   border-radius: 6px;
   padding: 10px 15px;
@@ -84,14 +102,28 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   font-size: 14px;
   font-weight: 500;
   transition: background-color 0.2s;
+  margin-right: 10px;
+  color: white;
+}
+
+.ghes-toggle-btn {
+  background-color: #28a745;
+}
+
+.video-toggle-btn {
+  background-color: #0366d6;
 }
 
 .ghes-toggle-btn:hover {
+  background-color: #218838;
+}
+
+.video-toggle-btn:hover {
   background-color: #0258c5;
 }
 
-.ghes-toggle-btn.active {
-  background-color: #28a745;
+.ghes-toggle-btn.active, .video-toggle-btn.active {
+  background-color: #6c757d;
 }
 
 /* Subscription tiers container for horizontal layout */
@@ -99,7 +131,18 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  margin-bottom: 10px;
+}
+
+/* Full width entries (100%) - plans stack vertically */
+.subscription-tiers-container.full-width {
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Half width entries (50%) - plans display horizontally */
+.subscription-tiers-container.half-width {
+  flex-direction: row;
+  width: calc(50% - 10px); /* Account for gap */
 }
 
 /* Subscription section styling */
@@ -112,6 +155,18 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   min-width: 250px; /* Minimum width before wrapping */
 }
 
+/* Tier link styling */
+.tier-link {
+  margin-top: 15px;
+  text-align: left;
+  font-size: 20px;
+}
+
+/* Section-specific GHES filter styling */
+.section-filter {
+  margin-bottom: 15px;
+}
+
 /* Videos section styling */
 .videos-section-title {
   border-bottom: 1px solid #e1e4e8;
@@ -120,54 +175,100 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 /* Video grid layouts */
 .videos-grid {
   display: grid;
-  gap: 15px;
+  gap: 10px;
   margin-bottom: 25px;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 
 /* Video card styling */
 .video-card {
-  background:rgba(246, 248, 250, 0.3);
+  background: rgba(246, 248, 250, 0.3);
   border: 1px solid #e1e4e8;
   border-radius: 6px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
+  padding: 12px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.video-card[data-video-url] {
+  cursor: pointer;
+}
+
+.video-card[data-video-url]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Video header with title and icons */
+.video-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .video-card h3 {
-  font-size: 20px;
-  font-weight: 400;
-  margin-top: 0;
-  margin-bottom: 0px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
 }
 
-.video-link {
-  margin-top: 10px;
-  margin-bottom: 0px;
+/* Video icons container */
+.video-icons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.ghes-support {
+/* Play button icon */
+.play-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: #0366d6;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.play-triangle {
+  width: 0;
+  height: 0;
+  border-left: 8px solid white;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-left: 2px; /* Slight offset to center the triangle visually */
+}
+
+/* GHES support icon */
+.ghes-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: white;
+  border-radius: 50%;
   font-size: 12px;
-  margin-top: auto;
+  font-weight: bold;
 }
 
-.ghes-badge-supported, .ghes-badge-unsupported {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-weight: normal;
+.ghes-supported {
+  background-color: #28a745;
 }
 
-.ghes-badge-supported {
-  background-color: rgba(3, 102, 214, 0.3);
-  color: rgba(255, 255, 255, 1);
-}
-
-.ghes-badge-unsupported {
-  background-color: rgba(215, 58, 73, 0.3);
-  color: rgba(255, 255, 255, 1);
+.ghes-not-supported {
+  background-color: #dc3545;
+  display: none; /* Hide by default */
 }
 
 /* Entry separator styling */
@@ -181,43 +282,108 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .videos-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+  }
+  
+  .video-card {
+    padding: 10px;
+  }
+  
+  .video-card h3 {
+    font-size: 13px;
   }
   
   .subscription-section {
     flex: 0 0 100%; /* Full width on small screens */
+    min-width: 0; /* Override minimum width to prevent overflow */
+  }
+  
+  .subscription-wrapper {
+    flex-direction: column;
+  }
+  
+  .subscription-tiers-container.half-width {
+    width: 100%; /* Full width on mobile */
+    flex-direction: column; /* Stack plans vertically on mobile */
+  }
+  
+  .subscription-tiers-container {
+    flex-wrap: nowrap; /* Prevent wrapping on small screens */
   }
 }
 </style>
 
-<!-- JavaScript for GHES filter toggle -->
+<!-- JavaScript for filter toggle buttons and video card clicks -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const toggleBtn = document.getElementById('toggleGhes');
-  const videoCards = document.querySelectorAll('.video-card');
-  let ghesOnly = false;
-
-  toggleBtn.addEventListener('click', function() {
-    ghesOnly = !ghesOnly;
-    toggleBtn.classList.toggle('active');
-
-    videoCards.forEach(card => {
-      if (ghesOnly) {
-        if (card.getAttribute('data-ghes') === 'true') {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      } else {
-        card.style.display = '';
+  const filterSections = document.querySelectorAll('.section-filter');
+  
+  // Handle video card clicks
+  const videoCards = document.querySelectorAll('.video-card[data-video-url]');
+  videoCards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      const videoUrl = card.getAttribute('data-video-url');
+      if (videoUrl) {
+        window.open(videoUrl, '_blank');
       }
     });
+  });
+  
+  filterSections.forEach(function(section) {
+    const ghesToggleBtn = section.querySelector('.ghes-toggle-btn');
+    const videoToggleBtn = section.querySelector('.video-toggle-btn');
+    let ghesOnly = false;
+    let videoOnly = false;
 
-    if (ghesOnly) {
-      toggleBtn.textContent = 'Show all supported features';
-    } else {
-      toggleBtn.textContent = 'Toggle GHES supported features';
+    // Find the next videos-grid after this section
+    const nextVideosGrid = section.nextElementSibling.querySelector('.videos-grid');
+    const videoCards = nextVideosGrid.querySelectorAll('.video-card');
+
+    function applyFilters() {
+      videoCards.forEach(card => {
+        const ghesSupport = card.getAttribute('data-ghes') === 'true';
+        const hasVideo = card.querySelector('.play-icon') !== null;
+        
+        let shouldShow = true;
+        
+        if (ghesOnly && !ghesSupport) {
+          shouldShow = false;
+        }
+        
+        if (videoOnly && !hasVideo) {
+          shouldShow = false;
+        }
+        
+        card.style.display = shouldShow ? '' : 'none';
+      });
     }
+
+    ghesToggleBtn.addEventListener('click', function() {
+      ghesOnly = !ghesOnly;
+      ghesToggleBtn.classList.toggle('active');
+      
+      if (ghesOnly) {
+        ghesToggleBtn.textContent = 'Show all features';
+      } else {
+        ghesToggleBtn.textContent = 'Show features with GHES support';
+      }
+      
+      applyFilters();
+    });
+
+    videoToggleBtn.addEventListener('click', function() {
+      videoOnly = !videoOnly;
+      videoToggleBtn.classList.toggle('active');
+      
+      if (videoOnly) {
+        videoToggleBtn.textContent = 'Show all features';
+      } else {
+        videoToggleBtn.textContent = 'Show features with videos';
+      }
+      
+      applyFilters();
+    });
   });
 });
 </script>
