@@ -1,0 +1,17 @@
+[
+  {
+    "name": "GitHub Blog",
+    "url": "https://github.blog/feed/",
+    "category": "GitHub"
+  },
+  {
+    "name": "VS Code Blog",
+    "url": "https://code.visualstudio.com/feed.xml",
+    "category": "VSCode"
+  },
+  {
+    "name": "Microsoft Developer Blog",
+    "url": "https://devblogs.microsoft.com/feed/",
+    "category": "Microsoft"
+  }
+]
