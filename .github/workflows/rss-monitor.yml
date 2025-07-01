@@ -23,19 +23,11 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Install dependencies
+      - name: Create monitor script
         run: |
-          npm init -y
-          npm install rss-parser
-      
-      - name: Monitor RSS feeds and create issues
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cat > monitor.js << 'EOF'
+          cat > monitor.js << 'SCRIPT_END'
           const Parser = require('rss-parser');
           const fs = require('fs');
-          const { execSync } = require('child_process');
           
           const parser = new Parser();
           
@@ -107,14 +99,13 @@ jobs:
               
               try {
                 const feed = await parser.parseURL(feedConfig.url);
-                const latestItems = feed.items.slice(0, 3); // Get last 3 entries
+                const latestItems = feed.items.slice(0, 3);
                 
                 for (const item of latestItems) {
                   const publishDate = new Date(item.pubDate);
                   const today = new Date();
                   const daysDiff = Math.floor((today - publishDate) / (1000 * 60 * 60 * 24));
                   
-                  // Only create issues for items published in the last 7 days to avoid spam
                   if (daysDiff <= 7) {
                     const template = generateMarkdownTemplate(item, feedConfig.name, feedConfig.category);
                     
@@ -153,6 +144,12 @@ jobs:
           }
           
           main().catch(console.error);
-          EOF
-          
-          node monitor.js
+          SCRIPT_END
+      
+      - name: Install dependencies
+        run: npm install rss-parser
+      
+      - name: Monitor RSS feeds and create issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node monitor.js
