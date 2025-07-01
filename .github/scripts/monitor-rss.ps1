@@ -128,6 +128,8 @@ try {
                 # Atom feed
                 $items = $response.feed.entry
             }
+
+            Write-Information "Found $($items.Count) items in feed: $($feedConfig.name)"
             
             # Get latest 3 items
             $latestItems = $items | Select-Object -First 3
