@@ -79,24 +79,23 @@ jobs:
           
           function generateMarkdownTemplate(item, feedName, category) {
             const publishDate = new Date(item.pubDate);
-            const filename = \`\${formatDate(publishDate)}-\${sanitizeFilename(item.title)}.md\`;
+            const filename = formatDate(publishDate) + '-' + sanitizeFilename(item.title) + '.md';
             
-            const frontMatter = \`\${'---'}
-layout: "post"
-title: "\${item.title.replace(/"/g, '\\\\"')}"
-author: "\${item.creator || feedName}"
-description: "\${(item.contentSnippet || item.content || '').substring(0, 200).replace(/"/g, '\\\\"')}..."
-excerpt_separator: <!--excerpt_end-->
-canonical_url: "\${item.link}"
-\${'---'}\`;
+            const frontMatter = '---\n' +
+              'layout: "post"\n' +
+              'title: "' + item.title.replace(/"/g, '\\"') + '"\n' +
+              'author: "' + (item.creator || feedName) + '"\n' +
+              'description: "' + (item.contentSnippet || item.content || '').substring(0, 200).replace(/"/g, '\\"') + '..."\n' +
+              'excerpt_separator: <!--excerpt_end-->\n' +
+              'canonical_url: "' + item.link + '"\n' +
+              '---';
             
-            const content = \`\${item.contentSnippet || item.content || item.title}<!--excerpt_end-->
-          
-[Read the full article](\${item.link})\`;
+            const content = (item.contentSnippet || item.content || item.title) + '<!--excerpt_end-->\n\n' +
+              '[Read the full article](' + item.link + ')';
             
             return {
               filename: filename,
-              content: frontMatter + '\\n\\n' + content
+              content: frontMatter + '\n\n' + content
             };
           }
           
