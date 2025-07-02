@@ -34,7 +34,7 @@ a.page-link {
 }
 
 // Special Contact button styling
-a.page-link-xebia {
+.site-header .page-link-xebia {
     font-size: 14px;
     font-weight: 600;
     background-color: rgba(230, 232, 235, 0.1);
@@ -49,7 +49,7 @@ a.page-link-xebia {
 
     &:hover {
         background-color: #bd93f9 !important; // Copilot purple
-        color: #ffffff !important;
+        color: #e6e8eb !important;
         border-color: #bd93f9;
         box-shadow: 0 4px 12px rgba(189, 147, 249, 0.4);
         transform: translateY(-1px);
@@ -60,7 +60,7 @@ a.page-link-xebia {
     }
 
     &:visited:hover {
-        color: #ffffff !important;
+        color: #e6e8eb !important;
     }
 }
 

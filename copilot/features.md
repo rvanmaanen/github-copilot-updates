@@ -151,7 +151,7 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   background: rgba(31, 111, 235, 0.10);
   border: 2px solid #7f56d9;
   border-radius: 12px;
-  padding: 20px 15px 15px 15px;
+  padding: 5px 15px 15px 15px;
   box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
   flex: 1;
   min-width: 250px; /* Minimum width before wrapping */
