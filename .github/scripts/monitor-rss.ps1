@@ -67,7 +67,9 @@ try {
             Write-Host "Found $($items.Count) items in feed: $($feedConfig.name)"
             
             # Get latest 3 items
-            $latestItems = $items | Select-Object -First 3
+            $latestItems = $items | Where-Object { (((Get-Date) - ([datetime] $_.pubDate)).Days -le 1) }
+
+            Write-Host "Found $($latestItems.Count) likely new items"
             
             foreach ($item in $latestItems) {
                 # Parse publication date
@@ -83,14 +85,6 @@ try {
                     continue
                 }
                 
-                $today = Get-Date
-                $daysDiff = ($today - $pubDate).Days
-                
-                # Only process items published within the last 7 days
-                if ($daysDiff -gt 7) {
-                    continue
-                }
-
                 $title = if ($item.title.'#text') { $item.title.'#text' } else { $item.title }
                 $link = if ($item.link.href) { $item.link.href } else { $item.link }
                 $pubDate = $pubDate
@@ -123,7 +117,7 @@ tags: "$tags"
 "@
                     
                 try {
-                    $issue = New-GitHubIssue -Title $issueTitle -Body $issueBody -Token $GitHubToken -Repo $Repository
+                    #$issue = New-GitHubIssue -Title $issueTitle -Body $issueBody -Token $GitHubToken -Repo $Repository
                     Write-Host "Created issue #$($issue.number) for: $($itemObj.title)"
                 }
                 catch {
