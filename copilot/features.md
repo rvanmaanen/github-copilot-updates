@@ -149,7 +149,7 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 /* Subscription section styling */
 .subscription-section {
   background: rgba(31, 111, 235, 0.10);
-  border: 2px solid #7f56d9;
+  border: 1px solid #bd93f9;
   border-radius: 12px;
   padding: 5px 15px 15px 15px;
   box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
@@ -194,7 +194,7 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 /* Video card styling */
 .video-card {
   background: rgba(31, 111, 235, 0.10);
-  border: 2px solid #7f56d9;
+  border: 1px solid #bd93f9;
   border-radius: 12px;
   padding: 15px;
   box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
@@ -209,7 +209,6 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 .video-card[data-video-url]:hover {
   transform: scale(1.05);
   background: rgba(31, 111, 235, 0.18);
-  border-color: #7f56d9;
   box-shadow: 0 12px 30px rgba(31, 111, 235, 0.25);
 }
 

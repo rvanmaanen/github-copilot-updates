@@ -205,10 +205,10 @@ html {
   min-height: 180px;
   padding: 30px 20px;
   background: rgba(31, 111, 235, 0.10); // More transparent Copilot blue
-  border: 2px solid #7f56d9;
+  border: 1px solid #bd93f9;
   border-radius: 12px;
   text-decoration: none;
-  color: #58a6ff !important; // Always Copilot link blue
+  color: #e6e8eb !important; // Always Copilot link blue
   transition: all 0.3s ease;
   text-align: center;
   backdrop-filter: blur(10px);
@@ -218,18 +218,9 @@ html {
   color: #e6e8eb !important;
 }
 
-.nav-square a,
-.nav-square a:visited,
-.nav-square a:hover,
-.nav-square a:focus {
-  color: #58a6ff !important;
-  text-decoration: underline;
-}
-
 .nav-square:hover {
   transform: scale(1.05);
   background: rgba(31, 111, 235, 0.18); // Slightly deeper Copilot blue
-  border-color: #7f56d9;
   box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
   text-decoration: none;
   color: inherit;
