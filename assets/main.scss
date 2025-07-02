@@ -12,7 +12,7 @@ a.page-link {
     position: relative;
     font-weight: 600;
     text-decoration: none !important;
-
+    color: #ffffff !important;
 
     @media only screen and (min-width: 800px) {
         &::after {
@@ -22,7 +22,7 @@ a.page-link {
             left: 0;
             width: 0;
             height: 2px;
-            background-color: rgb(27, 82, 180); // blueish
+            background-color: #bd93f9; // Copilot purple
             transition: width 0.3s ease-in-out;
         }
 
@@ -37,21 +37,21 @@ a.page-link {
 a.page-link-xebia {
     font-size: 14px;
     font-weight: 600;
-    background-color: rgb(27, 82, 180); // blueish
-    color: white;
+    background-color: #bd93f9; // Copilot purple
+    color: #1a1a2e;
     text-decoration: none !important;
     padding: 8px 16px 10px 16px;
     border-radius: 15px;
     margin-right: 9px;
-    transition: background-color 0.5s ease;
+    transition: background-color 0.3s, color 0.3s;
 
     &:hover {
-        background-color: rgb(46, 120, 203); // lighter blueish
-        color: white;
+        background-color: #58a6ff; // Copilot light blue
+        color: #1a1a2e;
     }
 
     &:visited {
-        color: white;
+        color: #1a1a2e;
     }
 }
 
@@ -74,52 +74,12 @@ a.page-link-xebia {
     color: #828282 !important;
 }
 
-.home-box-top {
-    width: calc(100% - 30px);
-    border: 1px solid #e8e8e8;
-    padding: 10px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-}
-
-.home-box-left {
-    float: left;
-    width: calc(50% - 35px);
-    border: 1px solid #e8e8e8;
-    padding: 10px;
-    border-radius: 15px;
-}
-
-@media only screen and (max-width: 800px) {
-    .home-box-left {
-        float: none;
-        width: calc(100% - 30px);
-        margin-bottom: 20px;
-    }
-}
-
-.home-box-right {
-    float: right;
-    margin-right: 8px;
-    width: calc(50% - 35px);
-    border: 1px solid #e8e8e8;
-    padding: 10px;
-    border-radius: 15px;
-}
-
-@media only screen and (max-width: 800px) {
-    .home-box-right {
-        float: none;
-        width: calc(100% - 30px);
-    }
-}
-
 // Set default font family and background for the entire site
 body {
     font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    background: linear-gradient(0.4turn, rgb(23, 54, 97) 0%, black 60%); // blueish gradient
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
     background-attachment: fixed;
-    color: white !important;
+    color: #e6e8eb !important;
     min-height: 100vh;
 }
 
@@ -132,6 +92,7 @@ body {
 .site-header {
     padding-top: 10px !important;
     padding-bottom: 10px !important;
+    color: #e6e8eb !important;
 }
 
 .site-header .wrapper {
@@ -153,23 +114,30 @@ body {
 }
 
 .page-content .wrapper {
-    background-color: rgba(200, 200, 200, 0.1);
+    background-color: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(127, 86, 217, 0.2);
     border-radius: 15px;
     padding: 10px 15px 20px 20px !important;
     margin-top: 0px !important;
+    backdrop-filter: blur(10px);
 }
 
 a {
-    color: white !important;
+    color: #58a6ff !important;
+    transition: color 0.2s;
+}
+a:visited {
+    color: #bd93f9 !important;
+}
+a:hover, a:focus {
+    color: #79c0ff !important;
 }
 
 .highlight {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    border-radius: 5px;
-}
-
-.highlight {
-    color: white !important;
+    background-color: rgba(189, 147, 249, 0.1) !important; // Copilot purple tint
+    border: 1px solid rgba(189, 147, 249, 0.2);
+    border-radius: 8px;
+    color: #e6e8eb !important;
 }
 
 code {
@@ -178,24 +146,23 @@ code {
 
 @media only screen and (max-width: 800px) {
     .site-nav {
-        background-color: rgba(12, 32, 53, 0.8) !important; // blueish
+        background-color: rgba(26, 26, 46, 0.9) !important;
+        border: 1px solid rgba(189, 147, 249, 0.2);
         margin-top: 10px !important;
+        border-radius: 8px;
+        z-index: 1000;
+        position: relative;
     }
 }
 
 .site-nav .menu-icon > svg {
-    fill: #ffffff !important;
+    fill: #e6e8eb !important;
 }
 
 .page-content a {
-    color: rgb(156, 210, 255) !important; // light blueish
-    
+    color: #58a6ff !important;
     &:visited {
-        color: rgb(156, 210, 255) !important;
-    }
-    
-    &:hover {
-        color: rgb(102, 180, 255) !important;
+        color: #bd93f9 !important;
     }
 }
 
@@ -228,20 +195,33 @@ html {
   align-items: center;
   min-height: 180px;
   padding: 30px 20px;
-  background: rgba(246, 248, 250, 0.2);
-  border: 2px solid rgba(3, 102, 214, 0.2);
+  background: rgba(31, 111, 235, 0.10); // More transparent Copilot blue
+  border: 2px solid #7f56d9;
   border-radius: 12px;
   text-decoration: none;
-  color: inherit;
+  color: #58a6ff !important; // Always Copilot link blue
   transition: all 0.3s ease;
   text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.nav-square *, .nav-square a, .nav-square a:visited, .nav-square a:hover, .nav-square a:focus {
+  color: #e6e8eb !important;
+}
+
+.nav-square a,
+.nav-square a:visited,
+.nav-square a:hover,
+.nav-square a:focus {
+  color: #58a6ff !important;
+  text-decoration: underline;
 }
 
 .nav-square:hover {
   transform: scale(1.05);
-  background: rgba(246, 248, 250, 0.3);
-  border-color: rgba(3, 102, 214, 0.4);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  background: rgba(31, 111, 235, 0.18); // Slightly deeper Copilot blue
+  border-color: #7f56d9;
+  box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
   text-decoration: none;
   color: inherit;
 }
@@ -278,6 +258,37 @@ html {
 
 .site-title {
     line-height: 0px !important;
+    color: #e6e8eb !important;
+}
+
+// Header specific styling
+.site-header {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    color: #e6e8eb !important;
+    
+    .site-title {
+        color: #e6e8eb !important;
+        line-height: 0px !important;
+    }
+    
+    .site-nav {
+        .page-link {
+            color: #e6e8eb !important;
+        }
+    }
+    
+    a {
+        color: #e6e8eb !important;
+        
+        &:visited {
+            color: #e6e8eb !important;
+        }
+        
+        &:hover {
+            color: #bd93f9 !important;
+        }
+    }
 }
 
 @import "minima";
