@@ -103,6 +103,7 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   font-weight: 500;
   transition: background-color 0.2s;
   margin-right: 10px;
+  margin-bottom: 10px;
   color: white;
 }
 
@@ -160,11 +161,6 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   margin-top: 15px;
   text-align: left;
   font-size: 20px;
-}
-
-/* Section-specific GHES filter styling */
-.section-filter {
-  margin-bottom: 15px;
 }
 
 /* Videos section styling */

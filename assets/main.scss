@@ -13,6 +13,7 @@ a.page-link {
     font-weight: 600;
     text-decoration: none !important;
 
+
     @media only screen and (min-width: 800px) {
         &::after {
             content: '';
@@ -21,7 +22,7 @@ a.page-link {
             left: 0;
             width: 0;
             height: 2px;
-            background-color: rgb(131, 27, 132);
+            background-color: rgb(27, 82, 180); // blueish
             transition: width 0.3s ease-in-out;
         }
 
@@ -36,7 +37,7 @@ a.page-link {
 a.page-link-xebia {
     font-size: 14px;
     font-weight: 600;
-    background-color: rgb(131, 27, 132);
+    background-color: rgb(27, 82, 180); // blueish
     color: white;
     text-decoration: none !important;
     padding: 8px 16px 10px 16px;
@@ -45,7 +46,7 @@ a.page-link-xebia {
     transition: background-color 0.5s ease;
 
     &:hover {
-        background-color: rgb(203, 46, 186);
+        background-color: rgb(46, 120, 203); // lighter blueish
         color: white;
     }
 
@@ -116,7 +117,7 @@ a.page-link-xebia {
 // Set default font family and background for the entire site
 body {
     font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    background: linear-gradient(0.4turn, rgb(93, 23, 97) 0%, black 60%);
+    background: linear-gradient(0.4turn, rgb(23, 54, 97) 0%, black 60%); // blueish gradient
     background-attachment: fixed;
     color: white !important;
     min-height: 100vh;
@@ -177,7 +178,7 @@ code {
 
 @media only screen and (max-width: 800px) {
     .site-nav {
-        background-color: rgba(50, 12, 53, 0.8) !important;
+        background-color: rgba(12, 32, 53, 0.8) !important; // blueish
         margin-top: 10px !important;
     }
 }
@@ -187,14 +188,14 @@ code {
 }
 
 .page-content a {
-    color: rgb(255, 188, 248) !important;
+    color: rgb(156, 210, 255) !important; // light blueish
     
     &:visited {
-        color: rgb(255, 188, 248) !important;
+        color: rgb(156, 210, 255) !important;
     }
     
     &:hover {
-        color: rgb(255, 127, 242) !important;
+        color: rgb(102, 180, 255) !important;
     }
 }
 
