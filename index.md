@@ -6,7 +6,7 @@ layout: "home"
 
 # GitHub Copilot Hub
 
-Welcome to the Xebia GitHub Copilot Hub. Here you will find resources, articles, and tools related to GitHub Copilot. Like what you see and want to know more? Have a look at our [GitHub training program](https://academy.xebia.com/discipline/github/)! Want to know more about Microsoft AI in general? Check out our [Microsoft AI Hub](https://ai.xebia.ms) too!
+Welcome to the GitHub Copilot Hub. Here you will find resources, articles, and tools related to GitHub Copilot. Like what you see and want to know more? Have a look at our [GitHub training program](https://academy.xebia.com/discipline/github/)! Want to know more about Microsoft AI in general? Check out our [Microsoft AI Hub](https://ai.xebia.ms) too!
 
 <!-- Navigation Links Section -->
 {%- assign default_paths = site.pages | sort: "order" | map: "path" -%}
