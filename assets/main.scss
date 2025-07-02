@@ -37,21 +37,30 @@ a.page-link {
 a.page-link-xebia {
     font-size: 14px;
     font-weight: 600;
-    background-color: #bd93f9; // Copilot purple
-    color: #1a1a2e;
+    background-color: rgba(230, 232, 235, 0.1);
+    color: #e6e8eb;
     text-decoration: none !important;
     padding: 8px 16px 10px 16px;
     border-radius: 15px;
     margin-right: 9px;
-    transition: background-color 0.3s, color 0.3s;
+    border: 2px solid #bd93f9;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(189, 147, 249, 0.3);
 
     &:hover {
-        background-color: #58a6ff; // Copilot light blue
-        color: #1a1a2e;
+        background-color: #bd93f9 !important; // Copilot purple
+        color: #ffffff !important;
+        border-color: #bd93f9;
+        box-shadow: 0 4px 12px rgba(189, 147, 249, 0.4);
+        transform: translateY(-1px);
     }
 
     &:visited {
-        color: #1a1a2e;
+        color: #e6e8eb !important;
+    }
+
+    &:visited:hover {
+        color: #ffffff !important;
     }
 }
 

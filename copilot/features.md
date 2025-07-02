@@ -148,12 +148,15 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 
 /* Subscription section styling */
 .subscription-section {
-  background: rgba(246, 248, 250, 0.3);
-  border-radius: 8px;
-  padding: 10px 15px 10px 15px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: rgba(31, 111, 235, 0.10);
+  border: 2px solid #7f56d9;
+  border-radius: 12px;
+  padding: 20px 15px 15px 15px;
+  box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
   flex: 1;
   min-width: 250px; /* Minimum width before wrapping */
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 /* Tier link styling */
@@ -161,6 +164,18 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   margin-top: 15px;
   text-align: left;
   font-size: 20px;
+}
+
+.tier-link a {
+  color: #58a6ff !important;
+}
+
+.tier-link a:visited {
+  color: #58a6ff !important;
+}
+
+.tier-link a:hover {
+  color: #79c0ff !important;
 }
 
 /* Videos section styling */
@@ -178,17 +193,13 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 
 /* Video card styling */
 .video-card {
-  background: rgba(246, 248, 250, 0.3);
-  border: 1px solid #e1e4e8;
-  border-radius: 6px;
-  padding: 12px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  transition: transform 0.2s ease;
-}
-
-.video-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: rgba(31, 111, 235, 0.10);
+  border: 2px solid #7f56d9;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .video-card[data-video-url] {
@@ -196,8 +207,10 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
 }
 
 .video-card[data-video-url]:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transform: scale(1.05);
+  background: rgba(31, 111, 235, 0.18);
+  border-color: #7f56d9;
+  box-shadow: 0 12px 30px rgba(31, 111, 235, 0.25);
 }
 
 /* Video header with title and icons */
