@@ -25,4 +25,6 @@ collections:
   news:
     output: true
   videos:
-    output: true
+    output: true    
+  poi:
+    output: true        
