@@ -118,7 +118,14 @@ updateURL();
 
 // Normalize tag for comparison (replace underscores with spaces, lowercase)
 function normalizeTag(tag) {
-return tag.replace(/_/g, ' ').toLowerCase();
+  return tag.replace(/_/g, ' ').toLowerCase();
+}
+
+// Check if a filter matches a tag as a complete word
+function wordMatches(tag, filter) {
+  // Create a regex that matches the filter as a complete word
+  const regex = new RegExp('\\b' + filter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+  return regex.test(tag);
 }
 
 // Update post visibility and available tags
@@ -134,21 +141,25 @@ posts.forEach(function(post) {
 
     // Check if post should be visible based on active filters
     const isVisible = activeFilters.size === 0 ||
-    Array.from(activeFilters).every(filter => postTagsNormalized.includes(filter));
+      Array.from(activeFilters).every(filter => 
+        postTagsNormalized.some(tag => wordMatches(tag, filter))
+      );
 
     post.style.display = isVisible ? '' : 'none';
 
     // If post is visible, add its tags to available tags
     if (isVisible) {
-    postTagsNormalized.forEach(tag => availableTags.add(tag));
+      postTagsNormalized.forEach(tag => availableTags.add(tag));
     }
-});
-
-// Update tag button states
-tagButtons.forEach(function(btn) {
+  });
+  
+  // Update tag button states
+  tagButtons.forEach(function(btn) {
     const tag = btn.getAttribute('data-tag');
     const isActive = activeFilters.has(tag);
-    const isAvailable = availableTags.has(tag) || activeFilters.size === 0;
+    const isAvailable = availableTags.has(tag) || 
+      Array.from(availableTags).some(availableTag => wordMatches(availableTag, tag)) ||
+      activeFilters.size === 0;
 
     btn.classList.toggle('active', isActive);
     btn.classList.toggle('disabled', !isAvailable);

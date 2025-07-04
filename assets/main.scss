@@ -180,8 +180,57 @@ code {
     }
 }
 
+
+.post-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px 15px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+.post-item p {
+    margin-bottom: 0px !important;
+}
+
+.post-list .post-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 40px;
+    padding: 15px 15px;
+    background: rgba(31, 111, 235, 0.10); // More transparent Copilot blue
+    border: 1px solid #bd93f9;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #e6e8eb !important;
+    transition: all 0.3s ease;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(189, 147, 249, 0.08);
+}
+
+
+.post-list .post-item:hover {
+    transform: scale(1.05);
+    background: rgba(31, 111, 235, 0.18); // Slightly deeper Copilot blue
+    box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
+    text-decoration: none;
+    color: inherit;
+}
+
+
 .post-list p {
     font-size: small !important;
+}
+
+@media (max-width: 900px) {
+    .post-list {
+        grid-template-columns: 1fr;
+    }
 }
 
 // Always show scrollbar to prevent layout shifts

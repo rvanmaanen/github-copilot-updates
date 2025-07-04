@@ -8,7 +8,7 @@ order: 1
 
 {%- assign date_format = "%Y-%m-%d" -%}
 
-{%- assign posts = site.news -%}
+{%- assign posts = site.news | sort: 'date' | reverse -%}
 {% include tag-filter.html %}
 
 <ul class="post-list">
