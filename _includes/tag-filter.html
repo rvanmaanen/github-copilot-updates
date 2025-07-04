@@ -67,15 +67,15 @@
 {%- comment -%} Sort the final tag list {%- endcomment -%}
 {%- assign sorted_tags = tag_groups | sort -%}
 
-{%- comment -%} Prepend the Today, Yesterday, This Week and Last Week tags {%- endcomment -%}
-{%- assign sorted_tags = '' | split: '' | push: 'Today' | push: 'Yesterday' | push: 'This Week' | push: 'Last Week' | concat: sorted_tags -%}
+{%- comment -%} Prepend the date filter tags {%- endcomment -%}
+{%- assign sorted_tags = '' | split: '' | push: 'Today' | push: 'Yesterday' | push: 'This Week' | push: 'Last Week' | push: 'This Month' | push: 'Last Month' | push: 'This Year' | push: 'Last Year' | concat: sorted_tags -%}
 
 <div id="tag-filters" style="margin-bottom: 15px;">
   <button class="tag-filter-btn clear-btn" onclick="clearFilters()">Clear All</button>
   {%- for tag in sorted_tags -%}
     {%- assign tag_lc = tag | downcase | strip -%}
     {%- assign is_date = false -%}
-    {%- if tag_lc == 'today' or tag_lc == 'yesterday' or tag_lc == 'this week' or tag_lc == 'last week' -%}
+    {%- if tag_lc == 'today' or tag_lc == 'yesterday' or tag_lc == 'this week' or tag_lc == 'last week' or tag_lc == 'this month' or tag_lc == 'last month' or tag_lc == 'this year' or tag_lc == 'last year' -%}
       {%- assign is_date = true -%}
     {%- endif -%}
     <button class="tag-filter-btn{% if is_date %} date-filter-btn{% endif %}" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
@@ -108,10 +108,24 @@ window.history.replaceState({}, '', url);
 
 // Toggle a filter on/off
 function toggleFilter(tag) {
-if (activeFilters.has(tag)) {
-    activeFilters.delete(tag);
+const dateFilters = ['today', 'yesterday', 'this week', 'last week', 'this month', 'last month', 'this year', 'last year'];
+const isDateFilter = dateFilters.includes(tag);
+
+if (isDateFilter) {
+    // For date filters, if already active, deactivate it; otherwise clear all other date filters and set this one
+    if (activeFilters.has(tag)) {
+        activeFilters.delete(tag);
+    } else {
+        dateFilters.forEach(dateFilter => activeFilters.delete(dateFilter));
+        activeFilters.add(tag);
+    }
 } else {
-    activeFilters.add(tag);
+    // For tag filters, toggle as before
+    if (activeFilters.has(tag)) {
+        activeFilters.delete(tag);
+    } else {
+        activeFilters.add(tag);
+    }
 }
 updateDisplay();
 updateURL();
@@ -165,7 +179,12 @@ posts.forEach(function(post) {
   tagButtons.forEach(function(btn) {
     const tag = btn.getAttribute('data-tag');
     const isActive = activeFilters.has(tag);
-    const isAvailable = availableTags.has(tag) || 
+    const dateFilters = ['today', 'yesterday', 'this week', 'last week', 'this month', 'last month', 'this year', 'last year'];
+    const isDateFilter = dateFilters.includes(tag);
+    
+    // Date filters are always available, tag filters depend on visible posts
+    const isAvailable = isDateFilter || 
+      availableTags.has(tag) || 
       Array.from(availableTags).some(availableTag => wordMatches(availableTag, tag)) ||
       activeFilters.size === 0;
 

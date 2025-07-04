@@ -387,4 +387,10 @@ html {
     background: rgba(224, 202, 255, 0.9)
 }
 
+.date-filter-btn:hover {
+    background: #9d72d9;
+    color: white;
+    border-color: #9d72d9;
+}
+
 @import "minima";
