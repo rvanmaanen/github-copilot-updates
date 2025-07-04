@@ -1,14 +1,14 @@
 ---
 layout: "page"
-title: "News"
-description: "Latest updates and articles related to GitHub Copilot."
+title: "Blogs"
+description: "A collection of blogs to help you get the most out of GitHub Copilot."
 excerpt_separator: <!--excerpt_end-->
-order: 1
+order: 2
 ---
 
 {%- assign date_format = "%Y-%m-%d" -%}
 
-{%- assign posts = site.news -%}
+{%- assign posts = site.posts -%}
 {% include tag-filter.html %}
 
 <ul class="post-list">

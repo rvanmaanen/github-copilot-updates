@@ -5,6 +5,7 @@ author: "Jesse Swart"
 description: "Learn how to leverage GitHub Copilot to help with data conversions."
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://blog.jesseswart.nl/post/copilot-data-conversion"
+tags: "GitHub_Copilot data_conversion SQL Markdown tutorials programming productivity"
 ---
 
 GitHub Copilot can efficiently convert data between various formats, making it a powerful tool for developers working with exported data from design tools. Jesse Swart demonstrates a simple three-step process to transform structured data like SQL statements into other formats such as Markdown.<!--excerpt_end-->

@@ -5,6 +5,7 @@ author: "Rob Bos"
 description: "A step-by-step refactoring example showing how to use GitHub Copilot effectively."
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devopsjournal.io/blog/2024/06/05/GitHub-Copilot-Power-User"
+tags: "GitHub_Copilot power_user refactoring GitHub_Actions YAML tutorials programming"
 ---
 
 Rob Bos demonstrates a real-world GitHub Copilot workflow by walking through a complete code refactoring task. The example shows how he extracted a script from a YAML pipeline (GitHub Actions) into a separate file using Copilot's assistance.<!--excerpt_end-->

@@ -1,0 +1,164 @@
+{%- comment -%} Collect all raw tags from posts {%- endcomment -%}
+{%- assign all_tags_raw = "" | split: "" -%}
+{%- for post in posts -%}
+{%- if post.tags -%}
+{%- for tag in post.tags -%}
+    {%- assign all_tags_raw = all_tags_raw | push: tag -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} Only proceed if we have tags {%- endcomment -%}
+{%- if all_tags_raw.size > 0 -%}
+
+{%- comment -%} Group tags by normalized version and select alphabetically first variant {%- endcomment -%}
+{%- assign tag_groups = "" | split: "" -%}
+{%- assign processed_normalized = "" | split: "" -%}
+
+{%- for tag in all_tags_raw -%}
+{%- comment -%} Normalize: replace underscores with spaces, lowercase for comparison {%- endcomment -%}
+{%- assign normalized_key = tag | replace: '_', ' ' | downcase -%}
+
+{%- comment -%} Skip if we already processed this normalized tag {%- endcomment -%}
+{%- unless processed_normalized contains normalized_key -%}
+    {%- assign processed_normalized = processed_normalized | push: normalized_key -%}
+
+    {%- comment -%} Find all variants of this tag and pick the alphabetically first one {%- endcomment -%}
+    {%- assign variants = "" | split: "" -%}
+    {%- for candidate in all_tags_raw -%}
+    {%- assign candidate_normalized = candidate | replace: '_', ' ' | downcase -%}
+    {%- if candidate_normalized == normalized_key -%}
+        {%- assign variants = variants | push: candidate -%}
+    {%- endif -%}
+    {%- endfor -%}
+    
+    {%- comment -%} Sort variants and take the first one {%- endcomment -%}
+    {%- assign sorted_variants = variants | sort -%}
+
+    {%- assign best_variant = sorted_variants[0] -%}
+    
+    {%- comment -%} Clean up the best variant: replace underscores with spaces, capitalize each word {%- endcomment -%}
+    {%- assign words_with_spaces = best_variant | replace: '_', ' ' -%}
+    {%- assign words_array = words_with_spaces | split: ' ' -%}
+    {%- assign capitalized_words = "" | split: "" -%}
+    
+    {%- for word in words_array -%}
+    {%- if word != blank and word != nil -%}
+        {%- assign first_char = word | slice: 0, 1 -%}
+        {%- assign first_char_upper = first_char | upcase -%}
+        {%- if first_char == first_char_upper -%}
+        {%- comment -%} Word already starts with uppercase, keep it as is {%- endcomment -%}
+        {%- assign capitalized_words = capitalized_words | push: word -%}
+        {%- else -%}
+        {%- comment -%} Word doesn't start with uppercase, capitalize it {%- endcomment -%}
+        {%- assign rest_chars = word | slice: 1, 100 -%}
+        {%- assign capitalized_word = first_char_upper | append: rest_chars -%}
+        {%- assign capitalized_words = capitalized_words | push: capitalized_word -%}
+        {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+    
+    {%- assign display_tag = capitalized_words | join: ' ' -%}
+    
+    {%- assign tag_groups = tag_groups | push: display_tag -%}
+{%- endunless -%}
+{%- endfor -%}
+
+{%- comment -%} Sort the final tag list {%- endcomment -%}
+{%- assign sorted_tags = tag_groups | sort -%}
+
+<div id="tag-filters" style="margin-bottom: 15px;">
+<button class="tag-filter-btn clear-btn" onclick="clearFilters()">Clear All</button>
+{%- for tag in sorted_tags -%}
+    <button class="tag-filter-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
+{%- endfor -%}
+</div>
+
+<script>
+let activeFilters = new Set();
+
+// Initialize from URL parameters
+function initializeFilters() {
+const urlParams = new URLSearchParams(window.location.search);
+const filters = urlParams.get('filters');
+if (filters) {
+    activeFilters = new Set(filters.split(',').filter(f => f.trim()));
+}
+updateDisplay();
+}
+
+// Update URL with current filters
+function updateURL() {
+const url = new URL(window.location);
+if (activeFilters.size > 0) {
+    url.searchParams.set('filters', Array.from(activeFilters).join(','));
+} else {
+    url.searchParams.delete('filters');
+}
+window.history.replaceState({}, '', url);
+}
+
+// Toggle a filter on/off
+function toggleFilter(tag) {
+if (activeFilters.has(tag)) {
+    activeFilters.delete(tag);
+} else {
+    activeFilters.add(tag);
+}
+updateDisplay();
+updateURL();
+}
+
+// Clear all filters
+function clearFilters() {
+activeFilters.clear();
+updateDisplay();
+updateURL();
+}
+
+// Normalize tag for comparison (replace underscores with spaces, lowercase)
+function normalizeTag(tag) {
+return tag.replace(/_/g, ' ').toLowerCase();
+}
+
+// Update post visibility and available tags
+function updateDisplay() {
+const posts = document.querySelectorAll('.post-item');
+const tagButtons = document.querySelectorAll('.tag-filter-btn:not(.clear-btn)');
+const availableTags = new Set();
+
+// Filter posts and collect available tags from visible posts
+posts.forEach(function(post) {
+    const postTagsRaw = (post.getAttribute('data-tags') || '').split(',').filter(t => t.trim());
+    const postTagsNormalized = postTagsRaw.map(normalizeTag);
+
+    // Check if post should be visible based on active filters
+    const isVisible = activeFilters.size === 0 ||
+    Array.from(activeFilters).every(filter => postTagsNormalized.includes(filter));
+
+    post.style.display = isVisible ? '' : 'none';
+
+    // If post is visible, add its tags to available tags
+    if (isVisible) {
+    postTagsNormalized.forEach(tag => availableTags.add(tag));
+    }
+});
+
+// Update tag button states
+tagButtons.forEach(function(btn) {
+    const tag = btn.getAttribute('data-tag');
+    const isActive = activeFilters.has(tag);
+    const isAvailable = availableTags.has(tag) || activeFilters.size === 0;
+
+    btn.classList.toggle('active', isActive);
+    btn.classList.toggle('disabled', !isAvailable);
+    btn.disabled = !isAvailable;
+});
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+initializeFilters();
+});
+</script>
+{%- endif -%}

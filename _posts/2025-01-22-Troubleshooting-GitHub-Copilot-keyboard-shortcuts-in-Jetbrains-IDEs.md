@@ -5,6 +5,7 @@ author: "Jesse Houwing"
 description: "Learn how to troubleshoot keyboard issues in Jetbrains IDE's when your GitHub Copilot tools don't work the way you're expecting"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://jessehouwing.net/troubleshooting-github-copilot-keyboard-shortcuts-in-jetbrains-ides/"
+tags: "GitHub_Copilot JetBrains_IDEs troubleshooting keyboard_shortcuts IntelliJ PyCharm configuration"
 ---
 
 While GitHub Copilot works easily in Visual Studio Code and Visual Studio 2022, Jetbrains IDEs (IntelliJ, Rider, PyCharm, etc.) can be trickier to set up. Jesse Houwing identifies two main problems that break GitHub Copilot functionality in these environments: keyboard shortcut conflicts and completion plugin interference.<!--excerpt_end-->
