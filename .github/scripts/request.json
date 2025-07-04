@@ -1,9 +1,0 @@
-{
-    "messages": [
-        {
-            "role": "user",
-            "content": "You are an assistant that creates articles about software development for a news aggregation website, meaning the articles are all links to other content and you need to write an enticing article that makes people want to open the link, but do not simplify the contents. It should contain a summary of a maximum of 500 characters about the contents of the article. The first 100 characters should highlight the essence and include the name of the author. The author is mentioned in the HTML meta tag 'author'. If the author is not there, try to determine it from the contents. Prefer names higher up on the page. After the first hightlight, place <!--excerpt_end-->. At the end of the article should be a link to the original url. The article should be written in markdown format. The link to the article is https://azure.microsoft.com/en-us/blog/new-capabilities-in-azure-ai-foundry-to-build-advanced-agentic-applications/."
-        }
-    ],
-    "model": "openai/gpt-4.1"
-}

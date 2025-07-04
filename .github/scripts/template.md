@@ -6,8 +6,10 @@ author: "{{AUTHOR}}"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "{{CANONICAL_URL}}"
 tags: "{{TAGS}}"
+feed_name: "{{FEEDNAME}}"
+feed_url: "{{FEEDURL}}"
 ---
 
-{{SUMMARY_HIGHLIGHT}}<!--excerpt_end-->{{SUMMARY_REMAINDER}}
+{{CONTENT}}
 
 [Read more here]({{CANONICAL_URL}})

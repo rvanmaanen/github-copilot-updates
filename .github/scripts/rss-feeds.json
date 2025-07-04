@@ -1,0 +1,20 @@
+[
+  {
+    "name": "GitHub Blog",
+    "url": "https://github.blog/feed/",
+    "category": "GitHub",
+    "description": "Updates, ideas, and inspiration from GitHub to help developers build and design software"
+  },
+  {
+    "name": "VS Code Blog", 
+    "url": "https://code.visualstudio.com/feed.xml",
+    "category": "VS Code",
+    "description": "Learn what's new in Visual Studio Code releases and blog posts"
+  },
+  {
+    "name": "Microsoft Developer Blog",
+    "url": "https://devblogs.microsoft.com/feed/",
+    "category": "Microsoft",
+    "description": "Get the latest information, insights, and news from Microsoft for developers"
+  }
+]
