@@ -1,0 +1,28 @@
+{%- assign tags = post.tags | join: ',' | downcase | replace: '_', ' ' | escape -%}
+
+{%- assign post_date = post.date | date: '%Y-%m-%d' -%}
+{%- assign now = 'now' | date: '%Y-%m-%d' -%}
+{%- assign now_day = 'now' | date: '%u' | plus: 0 -%}
+{%- assign post_day = post.date | date: '%u' | plus: 0 -%}
+{%- assign now_week = 'now' | date: '%U' | plus: 0 -%}
+{%- assign post_week = post.date | date: '%U' | plus: 0 -%}
+{%- assign now_year = 'now' | date: '%Y' | plus: 0 -%}
+{%- assign post_year = post.date | date: '%Y' | plus: 0 -%}
+
+{%- assign date_tags = '' | split: '' -%}
+{%- if post_date == now -%}
+  {%- assign date_tags = date_tags | push: 'today' -%}
+{%- endif -%}
+{%- assign yesterday = 'now' | date: '%s' | minus: 86400 | date: '%Y-%m-%d' -%}
+{%- if post_date == yesterday -%}
+  {%- assign date_tags = date_tags | push: 'yesterday' -%}
+{%- endif -%}
+{%- if post_year == now_year and post_week == now_week -%}
+  {%- assign date_tags = date_tags | push: 'this_week' -%}
+{%- endif -%}
+{%- assign last_week = now_week | minus: 1 -%}
+{%- if post_year == now_year and post_week == last_week -%}
+  {%- assign date_tags = date_tags | push: 'last_week' -%}
+{%- endif -%}
+
+{%- assign all_tags = tags | append: ',' | append: date_tags | join: ',' | replace: ',,', ',' | replace: '__', '_' | replace: ',,', ',' | replace: '_', ' ' | escape -%}

@@ -67,11 +67,19 @@
 {%- comment -%} Sort the final tag list {%- endcomment -%}
 {%- assign sorted_tags = tag_groups | sort -%}
 
+{%- comment -%} Prepend the Today, Yesterday, This Week and Last Week tags {%- endcomment -%}
+{%- assign sorted_tags = '' | split: '' | push: 'Today' | push: 'Yesterday' | push: 'This Week' | push: 'Last Week' | concat: sorted_tags -%}
+
 <div id="tag-filters" style="margin-bottom: 15px;">
-<button class="tag-filter-btn clear-btn" onclick="clearFilters()">Clear All</button>
-{%- for tag in sorted_tags -%}
-    <button class="tag-filter-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
-{%- endfor -%}
+  <button class="tag-filter-btn clear-btn" onclick="clearFilters()">Clear All</button>
+  {%- for tag in sorted_tags -%}
+    {%- assign tag_lc = tag | downcase | strip -%}
+    {%- assign is_date = false -%}
+    {%- if tag_lc == 'today' or tag_lc == 'yesterday' or tag_lc == 'this week' or tag_lc == 'last week' -%}
+      {%- assign is_date = true -%}
+    {%- endif -%}
+    <button class="tag-filter-btn{% if is_date %} date-filter-btn{% endif %}" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
+  {%- endfor -%}
 </div>
 
 <script>

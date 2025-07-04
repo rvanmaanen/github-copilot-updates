@@ -13,7 +13,9 @@ order: 1
 
 <ul class="post-list">
   {%- for post in posts -%}
-    <li class="post-item" data-tags="{{ post.tags | join: ',' | downcase | replace: '_', ' ' | escape }}">
+    {% include data-tags-builder.html %}
+
+    <li class="post-item" data-tags="{{ all_tags }}">
       <a href="{{ post.url | relative_url }}">
         {{ post.date | date: date_format }} - {{ post.title | escape }}
       </a>
