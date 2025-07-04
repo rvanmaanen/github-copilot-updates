@@ -11,6 +11,5 @@ feed_url: "https://github.blog/feed/"
 ---
 
 The GitHub dependency graph maps every direct and transitive dependency in your project, so you can identify risks, prioritize fixes, and keep your code secure.<!--excerpt_end-->
-The post Understand your software’s supply chain with GitHub’s dependency graph appeared first on The GitHub Blog.
 
-[Read more here](https://github.blog/security/supply-chain-security/understand-your-softwares-supply-chain-with-githubs-dependency-graph/)
+This post appeared first on The GitHub Blog. [Read the entire article here](https://github.blog/security/supply-chain-security/understand-your-softwares-supply-chain-with-githubs-dependency-graph/)

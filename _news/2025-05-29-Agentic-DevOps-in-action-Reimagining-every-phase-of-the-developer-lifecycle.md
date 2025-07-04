@@ -11,6 +11,5 @@ feed_url: "https://devblogs.microsoft.com/feed/"
 ---
 
 What if your dev tools could take the first pass at a feature, file a bug report, propose a fix—and deploy it? With Agentic DevOps and GitHub Copilot, they can. Here's how agents will reshape every step of the software development lifecycle.<!--excerpt_end-->
-The post Agentic DevOps in action: Reimagining every phase of the developer lifecycle appeared first on Microsoft for Developers.
 
-[Read more here](https://devblogs.microsoft.com/blog/reimagining-every-phase-of-the-developer-lifecycle)
+This post appeared first on The Microsoft Developer Blog. [Read the entire article here](https://devblogs.microsoft.com/blog/reimagining-every-phase-of-the-developer-lifecycle)

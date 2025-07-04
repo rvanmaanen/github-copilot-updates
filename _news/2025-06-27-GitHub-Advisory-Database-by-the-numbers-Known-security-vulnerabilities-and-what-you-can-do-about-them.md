@@ -1,7 +1,7 @@
 ---
 layout: "post"
 title: "GitHub Advisory Database by the numbers - Known security vulnerabilities and what you can do about them"
-description: "Use these insights to automate software security (where possible) to keep your projects safe...."
+description: "Use these insights to automate software security (where possible) to keep your projects safe."
 author: "Jonathan Evans"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/security/github-advisory-database-by-the-numbers-known-security-vulnerabilities-and-what-you-can-do-about-them/"
@@ -11,6 +11,5 @@ feed_url: "https://github.blog/feed/"
 ---
 
 Use these insights to automate software security (where possible) to keep your projects safe.<!--excerpt_end-->
-The post GitHub Advisory Database by the numbers: Known security vulnerabilities and what you can do about them appeared first on The GitHub Blog.
 
-[Read more here](https://github.blog/security/github-advisory-database-by-the-numbers-known-security-vulnerabilities-and-what-you-can-do-about-them/)
+This post appeared first on The GitHub Blog. [Read the entire article here](https://github.blog/security/github-advisory-database-by-the-numbers-known-security-vulnerabilities-and-what-you-can-do-about-them/)

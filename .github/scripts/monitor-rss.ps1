@@ -57,6 +57,8 @@ function Get-FrontMatterValue {
     $cleanValue = $cleanValue -replace '"', '\'''               # Replace double quotes with single quotes
     $cleanValue = $cleanValue -replace ': ', ' - '              # Replace colons with dashes
     $cleanValue = $cleanValue -replace 'https?://[^\s]+', ''    # Remove URLs
+    $cleanValue = $cleanValue -replace '\s+Read the full article', '.'
+    $cleanValue = $cleanValue -replace '(.*)\s+The post .+? appeared first on .*', '$1'
     $cleanValue = $cleanValue -replace '\s+', ' '               # Replace multiple spaces with single space
     $cleanValue = $cleanValue.Trim()                            # Remove leading/trailing whitespace
     
@@ -117,35 +119,63 @@ function Get-FeedItems {
         [System.Xml.XmlDocument]$XmlDoc
     )
     
-    # Try different RSS/Atom feed structures
-    $items = @()
+    # Check if the document has a default namespace (like Atom feeds)
+    $rootNamespace = $XmlDoc.DocumentElement.NamespaceURI
     
-    # RSS 2.0: /rss/channel/item
-    $rssItems = $XmlDoc.SelectNodes('//rss/channel/item')
-    if ($rssItems.Count -gt 0) {
-        $items = $rssItems
+    if ($rootNamespace -eq "http://www.w3.org/2005/Atom") {
+        # For Atom feeds with default namespace, we need to use namespace-aware queries
+        $nsmgr = New-Object System.Xml.XmlNamespaceManager($XmlDoc.NameTable)
+        $nsmgr.AddNamespace("atom", "http://www.w3.org/2005/Atom")
+        $items = $XmlDoc.SelectNodes('//atom:entry', $nsmgr)
+        Write-Host "Found $($items.Count) Atom entries using namespace manager"
     }
-    # RSS without rss wrapper: /channel/item  
-    elseif ($XmlDoc.SelectNodes('//channel/item').Count -gt 0) {
-        $items = $XmlDoc.SelectNodes('//channel/item')
+    elseif ($rootNamespace -and $rootNamespace -ne "") {
+        # For other namespaced feeds, create a namespace manager
+        $nsmgr = New-Object System.Xml.XmlNamespaceManager($XmlDoc.NameTable)
+        $nsmgr.AddNamespace("ns", $rootNamespace)
+        $items = $XmlDoc.SelectNodes('//ns:item', $nsmgr)
+        if ($items.Count -eq 0) {
+            $items = $XmlDoc.SelectNodes('//ns:entry', $nsmgr)
+        }
+        Write-Host "Found $($items.Count) items using namespace manager for $rootNamespace"
     }
-    # Atom: /feed/entry
-    elseif ($XmlDoc.SelectNodes('//feed/entry').Count -gt 0) {
-        $items = $XmlDoc.SelectNodes('//feed/entry')
+    else {
+        # For RSS feeds without namespace or simple XML
+        $items = @()
+        
+        # RSS 2.0: /rss/channel/item
+        $rssItems = $XmlDoc.SelectNodes('//rss/channel/item')
+        if ($rssItems.Count -gt 0) {
+            $items = $rssItems
+        }
+        # RSS without rss wrapper: /channel/item  
+        elseif ($XmlDoc.SelectNodes('//channel/item').Count -gt 0) {
+            $items = $XmlDoc.SelectNodes('//channel/item')
+        }
+        # Atom: /feed/entry
+        elseif ($XmlDoc.SelectNodes('//feed/entry').Count -gt 0) {
+            $items = $XmlDoc.SelectNodes('//feed/entry')
+        }
+        # Direct items
+        elseif ($XmlDoc.SelectNodes('//item').Count -gt 0) {
+            $items = $XmlDoc.SelectNodes('//item')
+        }
+        # Direct entries
+        elseif ($XmlDoc.SelectNodes('//entry').Count -gt 0) {
+            $items = $XmlDoc.SelectNodes('//entry')
+        }
+        
+        Write-Host "Found $($items.Count) items without namespace"
     }
-    # Direct items
-    elseif ($XmlDoc.SelectNodes('//item').Count -gt 0) {
-        $items = $XmlDoc.SelectNodes('//item')
-    }
-    # Direct entries
-    elseif ($XmlDoc.SelectNodes('//entry').Count -gt 0) {
-        $items = $XmlDoc.SelectNodes('//entry')
+    
+    if ($items.Count -eq 0) {
+        Write-Warning "No items found in feed. Root element: $($XmlDoc.DocumentElement.Name), Namespace: $rootNamespace"
+        return @()
     }
     
     return $items
 }
 
-  
 function Invoke-RssFeedsProcessor {
     param(
         [Parameter(Mandatory = $true)]
@@ -200,8 +230,7 @@ function Invoke-RssFeedsProcessor {
         $rawItems = @($rawItems)
     }
     else {
-        $itemCount = 0
-        $rawItems = @()
+        throw "No items found in RSS feed: $($feedConfig.url)"
     }
     
     Write-Host "Found $itemCount items in XML feed"
@@ -323,9 +352,9 @@ function Invoke-RssFeedsProcessor {
                     # For RSS feeds, category is the text content
                     $catValue = Get-XmlElementValue $childNode
                 }
-                
                 if ($catValue) {
-                    $categoryValues += $catValue.Trim()
+                    $encodedCatValue = [System.Web.HttpUtility]::HtmlEncode($catValue.Trim())
+                    $categoryValues += $encodedCatValue
                 }
             }
         }
@@ -336,7 +365,8 @@ function Invoke-RssFeedsProcessor {
                 if ($childNode.LocalName -eq 'tag' -or $childNode.LocalName -eq 'tags') {
                     $tagValue = Get-XmlElementValue $childNode
                     if ($tagValue) {
-                        $categoryValues += $tagValue.Trim()
+                        $encodedTagValue = [System.Web.HttpUtility]::HtmlEncode($tagValue.Trim())
+                        $categoryValues += $encodedTagValue
                     }
                 }
             }
@@ -404,7 +434,11 @@ function Invoke-RssFeedsProcessor {
         $author = Get-FrontMatterValue $author
         $description = Get-FrontMatterValue $item.description
         $descriptionSummary = $description -replace ' The post .*? first on .*', ''
-        $descriptionSummary = $descriptionSummary.Substring(0, [Math]::Min(100, $descriptionSummary.Length)) + '...' # Truncate to 200 characters
+        if ($descriptionSummary.Length -gt 100) {
+            $descriptionSummary = $descriptionSummary.Substring(0, [Math]::Min(100, $descriptionSummary.Length)) + '...' # Truncate to 100 characters
+        }
+        $descriptionSummary = $descriptionSummary.Trim()
+                
         # $descriptionSummary = Invoke-ChatCompletion `
         #     -Token $Token `
         #     -Model $Model `
@@ -412,7 +446,10 @@ function Invoke-RssFeedsProcessor {
 
         #remove html tags from content
         $content = $item.description -replace '<[^>]+>', ''
-        $content = $content -replace '(.*)(\s+The post .+? appeared first on .*)', '$1<!--excerpt_end-->$2'
+        $content = $content -replace '\s+Read the full article', '.<!--excerpt_end-->'
+        $content = $content -replace '(.*)\s+The post .+? appeared first on .*', '$1<!--excerpt_end-->'
+        $content = $content -replace '\[…\]', '[...]'
+        $content = $content -replace '\s+', ' '
 
         # Perform string replacements
         $markdownContent = $markdownContent -replace '{{TITLE}}', $title

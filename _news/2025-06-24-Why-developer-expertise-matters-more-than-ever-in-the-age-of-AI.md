@@ -11,6 +11,5 @@ feed_url: "https://github.blog/feed/"
 ---
 
 AI can help you code faster, but knowing why the code works—and sharpening your human-in-the-loop skills—is what makes you a great developer.<!--excerpt_end-->
-The post Why developer expertise matters more than ever in the age of AI appeared first on The GitHub Blog.
 
-[Read more here](https://github.blog/developer-skills/career-growth/why-developer-expertise-matters-more-than-ever-in-the-age-of-ai/)
+This post appeared first on The GitHub Blog. [Read the entire article here](https://github.blog/developer-skills/career-growth/why-developer-expertise-matters-more-than-ever-in-the-age-of-ai/)

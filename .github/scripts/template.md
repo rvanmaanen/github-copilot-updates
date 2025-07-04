@@ -12,4 +12,4 @@ feed_url: "{{FEEDURL}}"
 
 {{CONTENT}}
 
-[Read more here]({{CANONICAL_URL}})
+This post appeared first on The {{FEEDNAME}}. [Read the entire article here]({{CANONICAL_URL}})

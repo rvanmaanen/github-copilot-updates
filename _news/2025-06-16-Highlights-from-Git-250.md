@@ -11,6 +11,5 @@ feed_url: "https://github.blog/feed/"
 ---
 
 The open source Git project just released Git 2.50. Here is GitHub’s look at some of the most interesting features and changes introduced since last time.<!--excerpt_end-->
-The post Highlights from Git 2.50 appeared first on The GitHub Blog.
 
-[Read more here](https://github.blog/open-source/git/highlights-from-git-2-50/)
+This post appeared first on The GitHub Blog. [Read the entire article here](https://github.blog/open-source/git/highlights-from-git-2-50/)
