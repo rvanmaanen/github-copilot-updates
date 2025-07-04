@@ -44,75 +44,105 @@ function Get-SanitizedFilename {
     return $Title -replace '[^A-Za-z0-9\s-]', '' -replace '\s+', '-' -replace '-+', '-'
 }
 
-function Get-PropertyValue {
+function Get-FrontMatterValue {
+    param([string]$Value)
+    
+    if (-not $Value) {
+        return $Value
+    }
+    
+    # Clean up the value for front matter usage
+    $cleanValue = $Value -replace '<[^>]+>', ''                 # Remove HTML tags
+    $cleanValue = $cleanValue -replace '[\r\n]+', ' '           # Replace line breaks with spaces
+    $cleanValue = $cleanValue -replace '"', '\'''               # Replace double quotes with single quotes
+    $cleanValue = $cleanValue -replace ': ', ' - '              # Replace colons with dashes
+    $cleanValue = $cleanValue -replace 'https?://[^\s]+', ''    # Remove URLs
+    $cleanValue = $cleanValue -replace '\s+', ' '               # Replace multiple spaces with single space
+    $cleanValue = $cleanValue.Trim()                            # Remove leading/trailing whitespace
+    
+    return $cleanValue
+}
+
+function Get-XmlElementValue {
     param(
-        [object]$Object,
-        [string]$PropertyPath
+        [System.Xml.XmlNode]$Element,
+        [string]$AttributeName = $null
     )
     
-    if ($null -eq $Object) {
+    if ($null -eq $Element) {
         return $null
     }
     
-    # Split the property path and get the first property
-    $properties = $PropertyPath -split '\.', 2
-    $currentProp = $properties[0]
-    
-    # Check if the current property exists
-    if (-not $Object.PSObject.Properties[$currentProp]) {
-        return $null
+    # If looking for a specific attribute, return that
+    if ($AttributeName) {
+        return $Element.GetAttribute($AttributeName)
     }
     
-    $currentValue = $Object.PSObject.Properties[$currentProp].Value
+    # Get the text content, handling CDATA sections
+    $value = $Element.InnerText
     
-    # If the value is an XmlElement, get its innermost value
-    if ($currentValue -is [System.Xml.XmlElement]) {
-        if ($currentValue.HasChildNodes) {
-            $values = @()
-            foreach ($child in $currentValue.ChildNodes) {
-                if ($child.NodeType -eq 'Text') {
-                    $values += $child.Value
-                }
-                elseif ($child.NodeType -eq 'Element') {
-                    # For nested elements, get their text content
-                    $childText = $child.InnerText
-                    if ($childText) {
-                        $values += $childText
-                    }
-                }
-            }
-            if ($values.Count -gt 0) {
-                $currentValue = ($values -join ' ').Trim()
-            }
-            else {
-                $currentValue = $currentValue.InnerText
-            }
-        }
-        else {
-            $currentValue = $currentValue.InnerText
-        }
+    # Clean up the value
+    if ($value) {
+        $value = [System.Web.HttpUtility]::HtmlDecode($value)
+        $value = $value.Trim()
     }
     
-    # If there are more properties in the path, recurse
-    if ($properties.Length -gt 1) {
-        return Get-PropertyValue $currentValue $properties[1]
-    }
-    
-    # Return the value after cleaning
-    if ($currentValue -is [string]) {
-        $currentValue = [System.Web.HttpUtility]::HtmlDecode($currentValue)
+    return $value
+}
 
-        if ($currentValue -match '<!\[CDATA\[(.*?)\]\]>') {
-            $currentValue = $currentValue -replace '<!\[CDATA\[(.*?)\]\]>', '$1'
-        }
-
-        if ($currentValue -match '<.*?>') {
-            $currentValue = $currentValue -replace '<.*?>', ''
-        }
-
-        $currentValue = $currentValue.Trim()
+function Get-ElementByName {
+    param(
+        [System.Xml.XmlNode]$ParentNode,
+        [string]$ElementName
+    )
+    
+    # First try direct child selection
+    $element = $ParentNode.SelectSingleNode($ElementName)
+    if ($element) {
+        return $element
     }
-    return $currentValue
+    
+    # If not found, search through child nodes for local name match
+    foreach ($child in $ParentNode.ChildNodes) {
+        if ($child.LocalName -eq $ElementName) {
+            return $child
+        }
+    }
+    
+    return $null
+}
+
+function Get-FeedItems {
+    param(
+        [System.Xml.XmlDocument]$XmlDoc
+    )
+    
+    # Try different RSS/Atom feed structures
+    $items = @()
+    
+    # RSS 2.0: /rss/channel/item
+    $rssItems = $XmlDoc.SelectNodes('//rss/channel/item')
+    if ($rssItems.Count -gt 0) {
+        $items = $rssItems
+    }
+    # RSS without rss wrapper: /channel/item  
+    elseif ($XmlDoc.SelectNodes('//channel/item').Count -gt 0) {
+        $items = $XmlDoc.SelectNodes('//channel/item')
+    }
+    # Atom: /feed/entry
+    elseif ($XmlDoc.SelectNodes('//feed/entry').Count -gt 0) {
+        $items = $XmlDoc.SelectNodes('//feed/entry')
+    }
+    # Direct items
+    elseif ($XmlDoc.SelectNodes('//item').Count -gt 0) {
+        $items = $XmlDoc.SelectNodes('//item')
+    }
+    # Direct entries
+    elseif ($XmlDoc.SelectNodes('//entry').Count -gt 0) {
+        $items = $XmlDoc.SelectNodes('//entry')
+    }
+    
+    return $items
 }
 
   
@@ -136,10 +166,12 @@ function Invoke-RssFeedsProcessor {
     $maxAttempts = 3
     $attempt = 0
     $success = $false
-    $rssData = $null
+    $xmlDoc = $null
+    
     while (-not $success -and $attempt -lt $maxAttempts) {
         try {
-            $rssData = Invoke-RestMethod -Uri $feedConfig.url -Method Get
+            $xmlDoc = New-Object System.Xml.XmlDocument
+            $xmlDoc.Load($feedConfig.url)
             $success = $true
         }
         catch {
@@ -156,84 +188,71 @@ function Invoke-RssFeedsProcessor {
         }
     }
                 
-    # Convert items to an array that always has the same structure
-    $items = @()
-        
-    # Handle different RSS/Atom feed structures
-    if (Get-PropertyValue $rssData 'rss.channel.item') {
-        # RSS 2.0 format
-        $rawItems = Get-PropertyValue $rssData 'rss.channel.item'
+    # Get items from the XML document
+    $rawItems = Get-FeedItems -XmlDoc $xmlDoc
+    
+    # Ensure we have an array and get count safely
+    if ($rawItems -is [array]) {
+        $itemCount = $rawItems.Count
     }
-    elseif (Get-PropertyValue $rssData 'feed.entry') {
-        # Atom format
-        $rawItems = Get-PropertyValue $rssData 'feed.entry'
-    }
-    elseif (Get-PropertyValue $rssData 'channel.item') {
-        # RSS without rss wrapper
-        $rawItems = Get-PropertyValue $rssData 'channel.item'
-    }
-    elseif (Get-PropertyValue $rssData 'item') {
-        # Direct items array
-        $rawItems = Get-PropertyValue $rssData 'item'
-    }
-    elseif (Get-PropertyValue $rssData 'entry') {
-        # Direct entries array
-        $rawItems = Get-PropertyValue $rssData 'entry'
-    }
-    else {
-        # Fallback - try to use the data directly
-        $rawItems = $rssData
-    }
-        
-    # Ensure we have an array
-    if ($rawItems -isnot [array]) {
+    elseif ($rawItems) {
+        $itemCount = 1
         $rawItems = @($rawItems)
     }
-        
+    else {
+        $itemCount = 0
+        $rawItems = @()
+    }
+    
+    Write-Host "Found $itemCount items in XML feed"
+    
+    # Convert items to normalized structure
+    $items = @()
     # Normalize each item to a consistent structure
     foreach ($rawItem in $rawItems) {
-        # Determine title (required)
-        $title = Get-PropertyValue $rawItem 'title.#text'
+        # Extract title (required)
+        $title = Get-XmlElementValue (Get-ElementByName $rawItem 'title')
         if (-not $title) {
-            $title = Get-PropertyValue $rawItem 'title'
-        }
-        if (-not $title) {
-            throw "No title found for RSS item. Raw item: $($rawItem | ConvertTo-Json -Depth 2)"
+            throw "No title found for RSS item. Raw item: $($rawItem.OuterXml)"
         }
 
-        $title = $title -replace '[\r\n]+', ' '
-        $title = $title -replace '"', '\''' 
-        $title = $title -replace ': ', ' - '
-        $title = $title.Trim()
-            
-        # Determine link (required)
-        $link = Get-PropertyValue $rawItem 'link.href'
+        # Extract link (required)
+        $link = $null
+        $linkNode = Get-ElementByName $rawItem 'link'
+        if ($linkNode) {
+            # For Atom feeds, link might have href attribute
+            $link = Get-XmlElementValue $linkNode 'href'
+            if (-not $link) {
+                # For RSS feeds, link is the text content
+                $link = Get-XmlElementValue $linkNode
+            }
+        }
+        
+        # Fallback to other link fields
         if (-not $link) {
-            $link = Get-PropertyValue $rawItem 'link'
+            $link = Get-XmlElementValue (Get-ElementByName $rawItem 'url')
         }
+        
         if (-not $link) {
-            $link = Get-PropertyValue $rawItem 'url'
-        }
-        if (-not $link) {
-            throw "No link found for RSS item '$title'. Raw item: $($rawItem | ConvertTo-Json -Depth 2)"
-        }
-            
-        # Determine publication date (required)
-        $pubDateRaw = Get-PropertyValue $rawItem 'pubDate'
-        if (-not $pubDateRaw) {
-            $pubDateRaw = Get-PropertyValue $rawItem 'published'
-        }
-        if (-not $pubDateRaw) {
-            $pubDateRaw = Get-PropertyValue $rawItem 'updated'
-        }
-        if (-not $pubDateRaw) {
-            $pubDateRaw = Get-PropertyValue $rawItem 'date'
-        }
-        if (-not $pubDateRaw) {
-            throw "No publication date found for RSS item '$title'. Raw item: $($rawItem | ConvertTo-Json -Depth 2)"
+            throw "No link found for RSS item '$title'. Raw item: $($rawItem.OuterXml)"
         }
             
-        # Convert to DateTime during normalization
+        # Extract publication date (required)
+        $pubDateRaw = $null
+        $dateFields = @('pubDate', 'published', 'updated', 'date')
+        foreach ($field in $dateFields) {
+            $dateNode = Get-ElementByName $rawItem $field
+            if ($dateNode) {
+                $pubDateRaw = Get-XmlElementValue $dateNode
+                break
+            }
+        }
+        
+        if (-not $pubDateRaw) {
+            throw "No publication date found for RSS item '$title'. Raw item: $($rawItem.OuterXml)"
+        }
+            
+        # Convert to DateTime
         try {
             $pubDate = [datetime]$pubDateRaw
         }
@@ -241,163 +260,99 @@ function Invoke-RssFeedsProcessor {
             throw "Failed to parse publication date '$pubDateRaw' for RSS item '$title'. Error: $($_.Exception.Message)"
         }
             
-        # Determine description (required)
-        $description = Get-PropertyValue $rawItem 'description.#text'
-        if (-not $description) {
-            $description = Get-PropertyValue $rawItem 'description'
-        }
-        if (-not $description) {
-            $description = Get-PropertyValue $rawItem 'summary.#text'
-        }
-        if (-not $description) {
-            $description = Get-PropertyValue $rawItem 'summary'
-        }
-        if (-not $description) {
-            $description = Get-PropertyValue $rawItem 'content.#text'
-        }
-        if (-not $description) {
-            $description = Get-PropertyValue $rawItem 'content'
-        }
-        if (-not $description) {
-            throw "No description/summary found for RSS item '$title'. Raw item: $($rawItem | ConvertTo-Json -Depth 2)"
-        }
-
-        $description = $description -replace '[\r\n]+', ' '
-        $description = $description -replace '"', '\''' 
-        $description = $description -replace ': ', ' - '
-        $description = $description.Trim()
-
-        # Determine author (required)
-        $authorRaw = Get-PropertyValue $rawItem 'creator'
-        if (-not $authorRaw) {
-            $authorRaw = Get-PropertyValue $rawItem 'author.name'
-        }
-        if (-not $authorRaw) {
-            $authorRaw = Get-PropertyValue $rawItem 'author'
-        }
-        if (-not $authorRaw) {
-            $authorRaw = Get-PropertyValue $rawItem 'dc:creator'
-        }
-        if (-not $authorRaw) {
-            throw "No author found for RSS item '$title'. Raw item: $($rawItem | ConvertTo-Json -Depth 2)"
-        }
-            
-        # Flatten author to space-separated string
-        $author = if ($authorRaw -is [array]) {
-            ($authorRaw | ForEach-Object { if ($_ -is [string]) { $_ } else { $_.ToString() } }) -join ' '
-        }
-        elseif ($authorRaw -is [string]) {
-            $authorRaw
-        }
-        else {
-            $authorRaw.ToString()
+        # Extract description (required)
+        $description = $null
+        $descFields = @('description', 'summary', 'content')
+        foreach ($field in $descFields) {
+            $descNode = Get-ElementByName $rawItem $field
+            if ($descNode) {
+                $description = Get-XmlElementValue $descNode
+                break
+            }
         }
         
-        # Remove URLs from author string and clean up spacing
-        $author = $author -replace 'https?://[^\s]+', ''  # Remove URLs
-        $author = $author -replace '\s+', ' '             # Replace multiple spaces with single space
-        $author = $author.Trim()                          # Remove leading/trailing whitespace
+        if (-not $description) {
+            throw "No description/summary found for RSS item '$title'. Raw item: $($rawItem.OuterXml)"
+        }
 
-        # Determine categories (optional)
-        $categoryValues = @()
+        # Extract author (required)
+        $author = $null
         
-        # Debug: Show raw category data
-        Write-Host "Debug: Processing categories for item '$title'" -ForegroundColor Cyan
-        
-        # Skip Get-PropertyValue for categories as it's returning literal "category" instead of content
-        # Try direct property access first - this works correctly
-        if ($rawItem.PSObject.Properties['category']) {
-            Write-Host "Debug: Trying direct property access for categories" -ForegroundColor Cyan
-            $categoryProperty = $rawItem.category
-            Write-Host "Debug: Direct category property type: $($categoryProperty.GetType().Name)" -ForegroundColor Cyan
-            
-            if ($categoryProperty -is [array]) {
-                Write-Host "Debug: Direct category property is array with $($categoryProperty.Count) items" -ForegroundColor Cyan
-                foreach ($cat in $categoryProperty) {
-                    Write-Host "Debug: Direct category item: '$cat' (Type: $($cat.GetType().Name))" -ForegroundColor Cyan
-                    if ($cat -is [System.Xml.XmlElement] -and $cat.HasAttribute('term')) {
-                        $termValue = $cat.GetAttribute('term').Trim()
-                        Write-Host "Debug: Found term attribute: '$termValue'" -ForegroundColor Cyan
-                        if ($termValue) {
-                            $categoryValues += $termValue
-                        }
-                    }
-                    elseif ($cat -is [System.Xml.XmlElement] -and $cat.InnerText) {
-                        $innerValue = $cat.InnerText.Trim()
-                        Write-Host "Debug: Found inner text: '$innerValue'" -ForegroundColor Cyan
-                        if ($innerValue) {
-                            $categoryValues += $innerValue
-                        }
-                    }
-                    elseif ($cat -is [System.Xml.XmlElement]) {
-                        Write-Host "Debug: XML Element name: '$($cat.Name)', InnerText: '$($cat.InnerText)', OuterXml: '$($cat.OuterXml)'" -ForegroundColor Cyan
-                        # Try to get the CDATA content or text content
-                        if ($cat.FirstChild -and $cat.FirstChild.NodeType -eq 'CDATA') {
-                            $cdataValue = $cat.FirstChild.Value.Trim()
-                            Write-Host "Debug: Found CDATA: '$cdataValue'" -ForegroundColor Cyan
-                            if ($cdataValue) {
-                                $categoryValues += $cdataValue
-                            }
-                        }
-                        elseif ($cat.InnerText.Trim()) {
-                            $innerValue = $cat.InnerText.Trim()
-                            Write-Host "Debug: Using InnerText: '$innerValue'" -ForegroundColor Cyan
-                            $categoryValues += $innerValue
-                        }
-                    }
+        # Try simple field names first (no namespace)
+        $authorFields = @('creator', 'author')
+        foreach ($field in $authorFields) {
+            $authorNode = Get-ElementByName $rawItem $field
+            if ($authorNode) {
+                $author = Get-XmlElementValue $authorNode
+                break
+            }
+            # Also try author/name for Atom feeds
+            if (-not $author -and $field -eq 'author') {
+                $authorNameNode = Get-ElementByName $authorNode 'name'
+                if ($authorNameNode) {
+                    $author = Get-XmlElementValue $authorNameNode
                 }
             }
-            elseif ($categoryProperty -is [System.Xml.XmlElement]) {
-                Write-Host "Debug: Single XML element category" -ForegroundColor Cyan
-                if ($categoryProperty.HasAttribute('term')) {
-                    $termValue = $categoryProperty.GetAttribute('term').Trim()
-                    Write-Host "Debug: Found term attribute: '$termValue'" -ForegroundColor Cyan
-                    if ($termValue) {
-                        $categoryValues += $termValue
-                    }
+        }
+        
+        # If still no author, try to find dc:creator by searching through child nodes
+        if (-not $author) {
+            foreach ($childNode in $rawItem.ChildNodes) {
+                if ($childNode.LocalName -eq 'creator' -and $childNode.NamespaceURI -eq 'http://purl.org/dc/elements/1.1/') {
+                    $author = Get-XmlElementValue $childNode
+                    break
                 }
-                elseif ($categoryProperty.InnerText) {
-                    $innerValue = $categoryProperty.InnerText.Trim()
-                    Write-Host "Debug: Found inner text: '$innerValue'" -ForegroundColor Cyan
-                    if ($innerValue) {
-                        $categoryValues += $innerValue
-                    }
+            }
+        }
+        
+        if (-not $author) {
+            throw "No author found for RSS item '$title'. Raw item: $($rawItem.OuterXml)"
+        }
+
+        # Extract categories
+        $categoryValues = @()
+        
+        # Get all category elements
+        foreach ($childNode in $rawItem.ChildNodes) {
+            if ($childNode.LocalName -eq 'category') {
+                $catValue = $null
+                
+                # For Atom feeds, category might have term attribute
+                $catValue = Get-XmlElementValue $childNode 'term'
+                if (-not $catValue) {
+                    # For RSS feeds, category is the text content
+                    $catValue = Get-XmlElementValue $childNode
+                }
+                
+                if ($catValue) {
+                    $categoryValues += $catValue.Trim()
                 }
             }
         }
         
         # Fallback to tags if no categories found
         if ($categoryValues.Count -eq 0) {
-            $tagRaw = Get-PropertyValue $rawItem 'tags'
-            if ($tagRaw) {
-                if ($tagRaw -is [array]) {
-                    $categoryValues = $tagRaw | ForEach-Object { $_.ToString().Trim() } | Where-Object { $_ }
-                } else {
-                    $cleanTag = $tagRaw.ToString().Trim()
-                    if ($cleanTag) {
-                        $categoryValues = @($cleanTag)
+            foreach ($childNode in $rawItem.ChildNodes) {
+                if ($childNode.LocalName -eq 'tag' -or $childNode.LocalName -eq 'tags') {
+                    $tagValue = Get-XmlElementValue $childNode
+                    if ($tagValue) {
+                        $categoryValues += $tagValue.Trim()
                     }
                 }
             }
         }
         
-        Write-Host "Debug: Final extracted category values: [$($categoryValues -join '], [')]" -ForegroundColor Cyan
-        
-        # Always ensure we have the feed category in the list if it's not already there
+        # Always ensure we have the feed category
         if ($feedConfig.category -and $categoryValues -notcontains $feedConfig.category) {
             $categoryValues += $feedConfig.category
-            Write-Host "Debug: Added feed category '$($feedConfig.category)' to category values" -ForegroundColor Cyan
         }
         
-        # Join categories with spaces, removing any empty values
+        # Join categories with spaces
         $category = ($categoryValues | Where-Object { $_ -and $_.Length -gt 0 }) -join ' '
         
-        # Fallback to feed category if still empty (shouldn't happen now)
+        # Fallback to feed category if still empty
         if (-not $category -or $category.Length -eq 0) {
             $category = $feedConfig.category
-            Write-Host "No categories found in RSS item '$title', using feed category: $category"
-        } else {
-            Write-Host "Final categories for '$title': [$category]" -ForegroundColor Green
         }
 
         $normalizedItem = [PSCustomObject]@{
@@ -415,11 +370,9 @@ function Invoke-RssFeedsProcessor {
     Write-Host "Found $($items.Count) items in feed: $($feedConfig.name)"
                 
     # Get latest items from the last day
-    $latestItems = @($items)
-
-    # $latestItems = @($items | Where-Object { 
-    #         (((Get-Date) - $_.pubDate).Days -le 1)
-    #     })
+    $latestItems = @($items | Where-Object { 
+            (((Get-Date) - $_.pubDate).Days -le 365)
+        })
 
     Write-Host "Found $($latestItems.Count) likely new items"
                 
@@ -446,14 +399,20 @@ function Invoke-RssFeedsProcessor {
         }
                     
         $markdownContent = Get-Content $templatePath -Raw
-                    
-        $descriptionSummary = Invoke-ChatCompletion `
-            -Token $Token `
-            -Model $Model `
-            -Description ($item.description + "`n`nAuthor: $author")
+            
+        $title = Get-FrontMatterValue $title
+        $author = Get-FrontMatterValue $author
+        $description = Get-FrontMatterValue $item.description
+        $descriptionSummary = $description -replace ' The post .*? first on .*', ''
+        $descriptionSummary = $descriptionSummary.Substring(0, [Math]::Min(100, $descriptionSummary.Length)) + '...' # Truncate to 200 characters
+        # $descriptionSummary = Invoke-ChatCompletion `
+        #     -Token $Token `
+        #     -Model $Model `
+        #     -Description ($description + "`n`nAuthor: $author")
 
-        # Insert <!--excerpt_end--> before 'The post ... appeared first on ...' in the description
-        $descriptionWithExcerpt = $description -replace '(?m)(?= The post .+? appeared first on .+?\.)', '<!--excerpt_end-->'
+        #remove html tags from content
+        $content = $item.description -replace '<[^>]+>', ''
+        $content = $content -replace '(.*)(\s+The post .+? appeared first on .*)', '$1<!--excerpt_end-->$2'
 
         # Perform string replacements
         $markdownContent = $markdownContent -replace '{{TITLE}}', $title
@@ -463,13 +422,12 @@ function Invoke-RssFeedsProcessor {
         $markdownContent = $markdownContent -replace '{{TAGS}}', $tags
         $markdownContent = $markdownContent -replace '{{FEEDNAME}}', $feedConfig.name
         $markdownContent = $markdownContent -replace '{{FEEDURL}}', $feedConfig.url
-        $markdownContent = $markdownContent -replace '{{CONTENT}}', $descriptionWithExcerpt
+        $markdownContent = $markdownContent -replace '{{CONTENT}}', $content
 
         # Create the file
         Set-Content -Path $filePath -Value $markdownContent -Encoding UTF8 -Force
         Write-Host "Created file: $filename for: $($title). Waiting 5 seconds to avoid rate limiting..."
-        exit;
-        Start-Sleep -Seconds 5
+        #Start-Sleep -Seconds 5
     }
 }
 
