@@ -5,7 +5,7 @@ description: "A practical guide to GitHub Copilot’s agentic coding agent, chat
 author: "Chris Reddington"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/ai-and-ml/github-copilot/from-idea-to-pr-a-guide-to-github-copilots-agentic-workflows/"
-tags: "AI &amp; ML GitHub Copilot agentic AI generative AI GitHub"
+tags: "AI_&_ML GitHub_Copilot agentic_AI generative_AI GitHub"
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---

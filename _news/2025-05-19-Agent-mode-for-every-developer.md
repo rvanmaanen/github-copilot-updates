@@ -5,7 +5,7 @@ description: "At the beginning of April, agent mode rolled out to all users in V
 author: "Katie Savage"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/blog/agent-mode-for-every-developer"
-tags: "GitHub Microsoft for Developers GitHub Copilot Microsoft"
+tags: "GitHub Microsoft_for_Developers GitHub_Copilot Microsoft"
 feed_name: "Microsoft Developer Blog"
 feed_url: "https://devblogs.microsoft.com/feed/"
 ---

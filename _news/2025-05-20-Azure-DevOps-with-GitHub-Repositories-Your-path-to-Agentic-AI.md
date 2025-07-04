@@ -5,7 +5,7 @@ description: "GitHub Copilot has evolved beyond a coding assistant in the IDE in
 author: "Aaron Hallberg"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/blog/azure-devops-with-github-repositories-your-path-to-agentic-ai"
-tags: "Azure DevOps Microsoft for Developers Microsoft"
+tags: "Azure_DevOps Microsoft_for_Developers Microsoft"
 feed_name: "Microsoft Developer Blog"
 feed_url: "https://devblogs.microsoft.com/feed/"
 ---

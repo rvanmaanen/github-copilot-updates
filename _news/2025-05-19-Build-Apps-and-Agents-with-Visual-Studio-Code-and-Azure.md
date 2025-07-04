@@ -5,7 +5,7 @@ description: "In tech, the ground shifts fast—new frameworks, new patterns, ne
 author: "Mandy Whaley"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/blog/build-apps-and-agents-with-visual-studio-code-and-azure"
-tags: "Microsoft for Developers ai Azure GitHub GitHub Copilot microsoft build Model Context Protocol Visual Studio Code Microsoft"
+tags: "Microsoft_for_Developers ai Azure GitHub GitHub_Copilot microsoft_build Model_Context_Protocol Visual_Studio_Code Microsoft"
 feed_name: "Microsoft Developer Blog"
 feed_url: "https://devblogs.microsoft.com/feed/"
 ---

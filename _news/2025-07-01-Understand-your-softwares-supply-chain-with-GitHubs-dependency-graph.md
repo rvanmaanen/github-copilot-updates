@@ -5,7 +5,7 @@ description: "The GitHub dependency graph maps every direct and transitive depen
 author: "Andrea Griffiths"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/security/supply-chain-security/understand-your-softwares-supply-chain-with-githubs-dependency-graph/"
-tags: "Security Supply chain security Dependabot dependency graph supply chain GitHub"
+tags: "Security Supply_chain_security Dependabot dependency_graph supply_chain GitHub"
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---

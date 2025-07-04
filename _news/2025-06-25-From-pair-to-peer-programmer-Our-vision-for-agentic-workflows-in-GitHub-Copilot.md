@@ -5,7 +5,7 @@ description: "AI agents in GitHub Copilot don’t just assist developers but act
 author: "Tim Rogers"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/news-insights/product-news/from-pair-to-peer-programmer-our-vision-for-agentic-workflows-in-github-copilot/"
-tags: "News &amp; insights Product agentic AI generative AI GitHub Copilot GitHub"
+tags: "News_&_insights Product agentic_AI generative_AI GitHub_Copilot GitHub"
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---

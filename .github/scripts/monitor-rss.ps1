@@ -345,7 +345,6 @@ function Invoke-RssFeedsProcessor {
         foreach ($childNode in $rawItem.ChildNodes) {
             if ($childNode.LocalName -eq 'category') {
                 $catValue = $null
-                
                 # For Atom feeds, category might have term attribute
                 $catValue = Get-XmlElementValue $childNode 'term'
                 if (-not $catValue) {
@@ -353,20 +352,21 @@ function Invoke-RssFeedsProcessor {
                     $catValue = Get-XmlElementValue $childNode
                 }
                 if ($catValue) {
-                    $encodedCatValue = [System.Web.HttpUtility]::HtmlEncode($catValue.Trim())
-                    $categoryValues += $encodedCatValue
+                    # Replace spaces with underscores instead of HTML encoding
+                    $underscoreCatValue = $catValue.Trim() -replace '\s+', '_'
+                    $categoryValues += $underscoreCatValue
                 }
             }
         }
-        
+
         # Fallback to tags if no categories found
         if ($categoryValues.Count -eq 0) {
             foreach ($childNode in $rawItem.ChildNodes) {
                 if ($childNode.LocalName -eq 'tag' -or $childNode.LocalName -eq 'tags') {
                     $tagValue = Get-XmlElementValue $childNode
                     if ($tagValue) {
-                        $encodedTagValue = [System.Web.HttpUtility]::HtmlEncode($tagValue.Trim())
-                        $categoryValues += $encodedTagValue
+                        $underscoreTagValue = $tagValue.Trim() -replace '\s+', '_'
+                        $categoryValues += $underscoreTagValue
                     }
                 }
             }

@@ -5,7 +5,7 @@ description: "AI can help you code faster, but knowing why the code works—and 
 author: "Laura Lindeman"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/developer-skills/career-growth/why-developer-expertise-matters-more-than-ever-in-the-age-of-ai/"
-tags: "Career growth Developer skills AI productivity GitHub"
+tags: "Career_growth Developer_skills AI productivity GitHub"
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---
