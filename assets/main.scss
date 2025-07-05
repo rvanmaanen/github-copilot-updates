@@ -7,12 +7,24 @@ $content-width: 1024px !default;
 $on-palm: 800px !default;
 $on-laptop: 1024px !default;
 
+// Color variables for consistency
+$primary-color: #e6e8eb !default;
+$copilot-purple: #bd93f9 !default;
+$copilot-blue: rgba(31, 111, 235, 0.10) !default;
+$copilot-blue-hover: rgba(31, 111, 235, 0.18) !default;
+$link-color: #58a6ff !default;
+$link-hover: #79c0ff !default;
+$background-dark: rgba(26, 26, 46, 0.8) !default;
+$border-color: rgba(189, 147, 249, 0.2) !default;
+
+@import "minima";
+
 // Custom styles
 a.page-link {
     position: relative;
     font-weight: 600;
-    text-decoration: none !important;
-    color: #ffffff !important;
+    text-decoration: none;
+    color: #ffffff;
 
     @media only screen and (min-width: 800px) {
         &::after {
@@ -22,7 +34,7 @@ a.page-link {
             left: 0;
             width: 0;
             height: 2px;
-            background-color: #bd93f9; // Copilot purple
+            background-color: $copilot-purple;
             transition: width 0.3s ease-in-out;
         }
 
@@ -38,49 +50,41 @@ a.page-link {
     font-size: 14px;
     font-weight: 600;
     background-color: rgba(230, 232, 235, 0.1);
-    color: #e6e8eb;
-    text-decoration: none !important;
+    color: $primary-color;
+    text-decoration: none;
     padding: 8px 16px 10px 16px;
     border-radius: 15px;
     margin-right: 9px;
-    border: 2px solid #bd93f9;
+    border: 2px solid $copilot-purple;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(189, 147, 249, 0.3);
 
     &:hover {
-        background-color: #bd93f9 !important; // Copilot purple
-        color: #e6e8eb !important;
-        border-color: #bd93f9;
+        background-color: $copilot-purple;
+        color: $primary-color;
+        border-color: $copilot-purple;
         box-shadow: 0 4px 12px rgba(189, 147, 249, 0.4);
         transform: translateY(-1px);
     }
 
     &:visited {
-        color: #e6e8eb !important;
+        color: $primary-color;
     }
 
     &:visited:hover {
-        color: #e6e8eb !important;
+        color: $primary-color;
     }
 }
 
+// Content styling
 .post-header {
-    margin-bottom: 0px !important;
+    margin-bottom: 0;
 }
 
 .post-title {
-    font-size: 2em !important;
-    letter-spacing: unset !important;
-    line-height: unset !important;
-}
-
-.site-footer {
-    padding: 10px 0 0 0 !important;
-    color: #828282 !important;
-}
-
-.site-footer a {
-    color: #828282 !important;
+    font-size: 2em;
+    letter-spacing: unset;
+    line-height: unset;
 }
 
 // Set default font family and background for the entire site
@@ -88,8 +92,14 @@ body {
     font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
     background-attachment: fixed;
-    color: #e6e8eb !important;
+    color: $primary-color;
     min-height: 100vh;
+}
+
+// Always show scrollbar to prevent layout shifts
+html {
+    overflow-y: scroll;
+    scrollbar-width: thin; // For Firefox
 }
 
 // Adjust container background and other elements for dark theme
@@ -100,131 +110,162 @@ body {
 }
 
 .site-header {
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    color: #e6e8eb !important;
-}
+    padding: 10px 0;
+    color: $primary-color;
+    border-bottom: 1px solid white;
 
-.site-header .wrapper {
-    padding-right: 10px !important;
+    .wrapper {
+        padding-right: 10px;
+    }
+
+    .site-title {
+        color: $primary-color;
+        line-height: 0;
+    }
+
+    .site-nav {
+        .page-link {
+            color: $primary-color;
+        }
+    }
+
+    a {
+        color: $primary-color;
+
+        &:visited {
+            color: $primary-color;
+        }
+
+        &:hover {
+            color: $copilot-purple;
+        }
+    }
 }
 
 .page-content {
-    padding-top: 25px !important;
-    padding-bottom: 25px !important;
+    padding: 25px 0;
+
+    .wrapper {
+        background-color: $background-dark;
+        border: 1px solid rgba(127, 86, 217, 0.2);
+        border-radius: 15px;
+        padding: 10px 15px 20px 20px;
+        margin-top: 0;
+        backdrop-filter: blur(10px);
+    }
 }
 
 .site-footer {
-    padding-top: 20px !important;
-    padding-bottom: 10px !important;
+    padding: 20px 0 10px 0;
+    color: #828282;
+    border-top: 1px solid white;
+
+    a {
+        color: #828282;
+        
+        &:hover {
+            color: #a0a0a0;
+        }
+        
+        &:visited {
+            color: #828282;
+        }
+    }
 }
 
 .footer-col {
-    margin: 0 !important;
+    margin: 0;
 }
 
-.page-content .wrapper {
-    background-color: rgba(26, 26, 46, 0.8);
-    border: 1px solid rgba(127, 86, 217, 0.2);
-    border-radius: 15px;
-    padding: 10px 15px 20px 20px !important;
-    margin-top: 0px !important;
-    backdrop-filter: blur(10px);
-}
-
+// Global link styling
 a {
-    color: #58a6ff !important;
+    color: $link-color;
     transition: color 0.2s;
+
+    &:visited {
+        color: $copilot-purple;
+    }
+
+    &:hover,
+    &:focus {
+        color: $link-hover;
+    }
 }
 
-a:visited {
-    color: #bd93f9 !important;
-}
-
-a:hover,
-a:focus {
-    color: #79c0ff !important;
-}
-
+// Code styling
 .highlight {
-    background-color: rgba(189, 147, 249, 0.1) !important; // Copilot purple tint
-    border: 1px solid rgba(189, 147, 249, 0.2);
+    background-color: rgba(189, 147, 249, 0.1);
+    border: 1px solid $border-color;
     border-radius: 8px;
-    color: #e6e8eb !important;
+    color: $primary-color;
 }
 
 code {
-    background-color: transparent !important;
+    background-color: transparent;
 }
 
+// Mobile navigation
 @media only screen and (max-width: 800px) {
     .site-nav {
-        background-color: rgba(26, 26, 46, 0.9) !important;
-        border: 1px solid rgba(189, 147, 249, 0.2);
-        margin-top: 10px !important;
+        background-color: rgba(26, 26, 46, 0.9);
+        border: 1px solid $border-color;
+        margin-top: 10px;
         border-radius: 8px;
         z-index: 1000;
         position: relative;
     }
 }
 
-.site-nav .menu-icon>svg {
-    fill: #e6e8eb !important;
+.site-nav .menu-icon > svg {
+    fill: $primary-color;
 }
 
-.page-content a {
-    color: #58a6ff !important;
-
-    &:visited {
-        color: #bd93f9 !important;
-    }
-}
+// Remove redundant page-content a selector as it duplicates global a styling
 
 
+// Post grid styling
 .post-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px 15px;
+    gap: 15px;
     list-style: none;
     padding: 0;
     margin: 0 0 15px 0;
-}
 
-.post-item p {
-    margin-bottom: 0px !important;
-}
+    p {
+        font-size: small;
+    }
 
-.post-list .post-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 40px;
-    padding: 15px 15px;
-    background: rgba(31, 111, 235, 0.10); // More transparent Copilot blue
-    border: 1px solid #bd93f9;
-    border-radius: 12px;
-    text-decoration: none;
-    color: #e6e8eb !important;
-    transition: all 0.3s ease;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    margin: 0;
-    box-shadow: 0 2px 8px rgba(189, 147, 249, 0.08);
-}
+    .post-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 40px;
+        padding: 15px;
+        background: $copilot-blue;
+        border: 1px solid $copilot-purple;
+        border-radius: 12px;
+        text-decoration: none;
+        color: $primary-color;
+        transition: all 0.3s ease;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        margin: 0;
+        box-shadow: 0 2px 8px rgba(189, 147, 249, 0.08);
 
+        &:hover {
+            transform: scale(1.05);
+            background: $copilot-blue-hover;
+            box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
+            text-decoration: none;
+            color: inherit;
+        }
 
-.post-list .post-item:hover {
-    transform: scale(1.05);
-    background: rgba(31, 111, 235, 0.18); // Slightly deeper Copilot blue
-    box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
-    text-decoration: none;
-    color: inherit;
-}
-
-
-.post-list p {
-    font-size: small !important;
+        p {
+            margin-bottom: 0;
+        }
+    }
 }
 
 @media (max-width: 900px) {
@@ -233,12 +274,7 @@ code {
     }
 }
 
-// Always show scrollbar to prevent layout shifts
-html {
-    overflow-y: scroll;
-    scrollbar-width: thin; // For Firefox
-}
-
+// Navigation grid styling
 .bottom-navigation {
     padding-bottom: 10px;
 }
@@ -251,7 +287,7 @@ html {
     margin: 0 auto;
     justify-content: center;
     
-    // Allow up to 5 columns by using smaller minimum sizes
+    // Responsive grid adjustments
     @media (min-width: 1200px) {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         max-width: 1200px;
@@ -284,6 +320,7 @@ html {
     max-width: 100%;
 }
 
+// Navigation square styling
 .nav-square {
     display: flex;
     flex-direction: column;
@@ -292,11 +329,11 @@ html {
     min-height: 120px;
     height: auto;
     padding: 20px;
-    background: rgba(31, 111, 235, 0.10); // More transparent Copilot blue
-    border: 1px solid #bd93f9;
+    background: $copilot-blue;
+    border: 1px solid $copilot-purple;
     border-radius: 12px;
     text-decoration: none;
-    color: #e6e8eb !important; // Always white text
+    color: $primary-color;
     transition: all 0.3s ease;
     text-align: center;
     backdrop-filter: blur(10px);
@@ -305,16 +342,29 @@ html {
 
     &:hover {
         transform: scale(1.05);
-        background: rgba(31, 111, 235, 0.18); // Slightly deeper Copilot blue
+        background: $copilot-blue-hover;
         box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
-        text-decoration: none !important;
-        color: #e6e8eb !important; // Keep white text on hover
+        text-decoration: none;
+        color: $primary-color;
     }
+}
+
+// Navigation titles and descriptions
+.nav-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: $primary-color;
+}
+
+.nav-desc {
+    font-size: 14px;
+    line-height: 1.4;
+    color: $primary-color;
 }
 
 // Home page specific styling for nav-squares with background images
 .bottom-navigation-home .nav-square {
-    // Set specific dimensions: 50% width, 150px height
     min-height: 150px;
     height: 150px;
     padding: 20px;
@@ -326,7 +376,7 @@ html {
     background-repeat: no-repeat;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(0px);
+    backdrop-filter: blur(0);
 
     // Add a subtle overlay to ensure text readability
     &::before {
@@ -366,21 +416,8 @@ html {
         }
         
         // Prevent underline on hover
-        text-decoration: none !important;
+        text-decoration: none;
     }
-}
-
-.nav-title {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #e6e8eb !important; // Ensure white text everywhere
-}
-
-.nav-desc {
-    font-size: 14px;
-    line-height: 1.4;
-    color: #e6e8eb !important; // Ensure white text everywhere
 }
 
 /* Responsive adjustments */
@@ -430,40 +467,7 @@ html {
     }
 }
 
-.site-title {
-    line-height: 0px !important;
-    color: #e6e8eb !important;
-}
-
-// Header specific styling
-.site-header {
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    color: #e6e8eb !important;
-
-    .site-title {
-        color: #e6e8eb !important;
-        line-height: 0px !important;
-    }
-
-    .site-nav {
-        .page-link {
-            color: #e6e8eb !important;
-        }
-    }
-
-    a {
-        color: #e6e8eb !important;
-
-        &:visited {
-            color: #e6e8eb !important;
-        }
-
-        &:hover {
-            color: #bd93f9 !important;
-        }
-    }
-}
+// Remove duplicate site-title and site-header styles - already defined above
 
 .tag-filter-btn {
     margin: 2px;
@@ -569,12 +573,10 @@ html {
   }
 }
 
-@import "minima";
-
 // Subnav styling
 .subnav-wrapper {
     background: rgba(26, 26, 46, 0.9);
-    border-bottom: 1px solid rgba(189, 147, 249, 0.2);
+    border-bottom: 1px solid $border-color;
     backdrop-filter: blur(10px);
 }
 
@@ -593,8 +595,8 @@ html {
 .subpage-link {
     position: relative;
     font-weight: 500;
-    text-decoration: none !important;
-    color: #e6e8eb !important;
+    text-decoration: none;
+    color: $primary-color;
     padding: 8px 16px;
     border-radius: 8px;
     transition: all 0.3s ease;
@@ -602,25 +604,25 @@ html {
 
     &:hover {
         background: rgba(189, 147, 249, 0.1);
-        color: #bd93f9 !important;
+        color: $copilot-purple;
     }
 
     &.active {
         background: rgba(189, 147, 249, 0.2);
-        color: #bd93f9 !important;
+        color: $copilot-purple;
         font-weight: 600;
     }
 
     &:visited {
-        color: #e6e8eb !important;
-    }
+        color: $primary-color;
 
-    &:visited:hover {
-        color: #bd93f9 !important;
-    }
+        &:hover {
+            color: $copilot-purple;
+        }
 
-    &:visited.active {
-        color: #bd93f9 !important;
+        &.active {
+            color: $copilot-purple;
+        }
     }
 }
 
