@@ -77,7 +77,7 @@
         
         // Remove overlay completely on mobile to let background images show through 100%
         &::before {
-            background: transparent;
+            display: none; // Completely hide the overlay element
         }
         
         .nav-content {
@@ -86,10 +86,6 @@
         }
         
         &:hover {
-            &::before {
-                background: transparent; // Keep transparent on hover
-            }
-            
             .nav-content {
                 background: rgba(26, 26, 46, 0.8);
             }
@@ -111,7 +107,7 @@
         
         // Remove overlay completely on small mobile screens to showcase images 100%
         &::before {
-            background: transparent;
+            display: none; // Completely hide the overlay element
         }
         
         .nav-content {
@@ -120,10 +116,6 @@
         }
         
         &:hover {
-            &::before {
-                background: transparent; // Keep transparent on hover
-            }
-            
             .nav-content {
                 background: rgba(26, 26, 46, 0.85);
             }
