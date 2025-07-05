@@ -50,9 +50,9 @@
       </label>
 
       <div class="trigger">
-        <a class="page-link{% if page.url == '/' or page.url == '/index.html' %} active{% endif %}" href="/">Home</a>
-        <a class="page-link{% if current_section == 'ai' %} active{% endif %}" href="/ai">Microsoft AI Hub</a>
-        <a class="page-link{% if current_section == 'github-copilot' %} active{% endif %}" href="/github-copilot">GitHub Copilot Hub</a>
+        <a class="page-link{% if page.url == '/' or page.url == '/index.html' %} active{% endif %}" href="{{ "/" | relative_url }}">Home</a>
+        <a class="page-link{% if current_section == 'ai' %} active{% endif %}" href="{{ "/ai" | relative_url }}">Microsoft AI Hub</a>
+        <a class="page-link{% if current_section == 'github-copilot' %} active{% endif %}" href="{{ "/github-copilot" | relative_url }}">GitHub Copilot Hub</a>
         <a class="page-link-xebia" href="https://www.xebia.com/contact" target="_blank">Contact</a>
       </div>
     </nav>
