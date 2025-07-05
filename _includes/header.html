@@ -70,21 +70,30 @@
 {%- endif -%}
 
 {%- comment -%}
-  Show subnav only if we have section pages
+  Show subnav if we have section pages OR if we're on the homepage
 {%- endcomment -%}
-{%- if section_pages.size > 0 -%}
+{%- assign is_homepage = false -%}
+{%- if page.url == '/' or page.url == '/index.html' -%}
+  {%- assign is_homepage = true -%}
+{%- endif -%}
+
+{%- if section_pages.size > 0 or is_homepage -%}
 <div class="subnav-wrapper">
   <nav class="site-subnav">
-      {%- for my_page in section_pages -%}
-      {%- if my_page.title -%}
-      {%- assign is_active = false -%}
-      {%- if page.url contains my_page.url -%}
-      {%- assign is_active = true -%}
+      {%- if section_pages.size > 0 -%}
+        {%- for my_page in section_pages -%}
+        {%- if my_page.title -%}
+        {%- assign is_active = false -%}
+        {%- if page.url contains my_page.url -%}
+        {%- assign is_active = true -%}
+        {%- endif -%}
+        <a class="subpage-link{% if is_active %} active{% endif %}" href="{{ my_page.url | relative_url }}">{{
+          my_page.title | escape }}</a>
+        {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%}Empty subnav for homepage{%- endcomment -%}
       {%- endif -%}
-      <a class="subpage-link{% if is_active %} active{% endif %}" href="{{ my_page.url | relative_url }}">{{
-        my_page.title | escape }}</a>
-      {%- endif -%}
-      {%- endfor -%}
   </nav>
 </div>
 {%- endif -%}
