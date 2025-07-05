@@ -549,6 +549,7 @@ function Invoke-RssFeedsProcessor {
         $markdownContent = $markdownContent -replace '{{CONTENT}}', $response.content
         $markdownContent = $markdownContent -replace '{{DATE}}', (Get-FrontMatterValue ($item.pubDate.ToString("yyyy-MM-ddTHH:mm:ssZ")))
         $markdownContent = $markdownContent -replace '{{CATEGORIES}}', (Get-FrontMatterValue ($categories -join ','))
+        $markdownContent = $markdownContent -replace '{{PERMALINK}}', (Get-FrontMatterValue ($filename -replace '\.md$', '.html'))
 
         # Create the file
         Set-Content -Path $filePath -Value $markdownContent -Encoding UTF8 -Force

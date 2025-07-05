@@ -3,6 +3,7 @@ layout: "page"
 title: "Copilot Feature Highlights"
 description: "An overview of GitHub Copilot plans as of June the 27th 2025, combining official features with example videos."
 order: 3
+permalink: "/github-copilot/features.html"
 ---
 
 This page provides a comprehensive overview of GitHub Copilot plans as of June the 27th 2025, combining official features with example videos.

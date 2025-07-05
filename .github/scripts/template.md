@@ -10,6 +10,7 @@ categories: [{{CATEGORIES}}]
 feed_name: "{{FEEDNAME}}"
 feed_url: "{{FEEDURL}}"
 date: {{DATE}}
+permalink: "{{PERMALINK}}"
 ---
 
 {{CONTENT}}

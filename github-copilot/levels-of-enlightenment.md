@@ -6,6 +6,7 @@ description: "A guide to the 9 levels of enlightenment for getting the most out 
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devopsjournal.io/blog/2024/06/07/GitHub-Copilot-Levels-of-enlightenment"
 order: 4
+permalink: "/github-copilot/levels-of-enlightenment.html"
 ---
 
 Want to master GitHub Copilot? Go through this journey of discovery through "Levels of Enlightenment" - a series of nine practical insights gained from over a year of using the AI pair programmer. Each level represents an "aha" moment that dramatically improved his productivity when working with Copilot.<!--excerpt_end-->

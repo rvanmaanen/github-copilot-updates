@@ -10,6 +10,7 @@ categories: [AI,Copilot]
 feed_name: "Rob Bos"
 feed_url: "https://devopsjournal.io/blog/atom.xml"
 date: 2025-06-17T02:00:00Z
+permalink: /2025-06-17-GitHub-Copilot-Premium-Requests.html
 ---
 
 In this article, Rob Bos delves into the recently introduced Premium Requests system for GitHub Copilot, highlighting how the changes will directly impact developers, organizations, and end-users. <!--excerpt_end--> With this enforcement, users will now be charged for their consumption of Generative AI in Copilot beyond the basic quota included in their chosen plan, making transparency about resource use — and its real monetary cost — a central theme.

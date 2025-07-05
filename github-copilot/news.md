@@ -1,15 +1,15 @@
 ---
 layout: "page"
 title: "News"
-description: "Latest updates and articles related to AI."
+description: "Latest updates and articles related to GitHub Copilot."
 excerpt_separator: <!--excerpt_end-->
-order: 2
-permalink: "/ai/news.html"
+order: 1
+permalink: "/github-copilot/news.html"
 ---
 
 {%- assign date_format = "%Y-%m-%d" -%}
 
-{%- assign posts = site.news | where: "categories", "AI" | sort: 'date' | reverse -%}
+{%- assign posts = site.news | where: "categories", "Copilot" | sort: 'date' | reverse -%}
 {% include tag-filter.html %}
 
 <ul class="post-list">
@@ -17,7 +17,7 @@ permalink: "/ai/news.html"
     {% include data-tags-builder.html %}
 
     <li class="post-item" data-tags="{{ all_tags }}" data-date="{{ post_date_iso }}">
-      <a href="{{ post.url | relative_url }}?entry=ai">
+      <a href="{{ post.url | relative_url }}?entry=github-copilot">
         {{ post.date | date: date_format }} - {{ post.title | escape }}
       </a>
       {%- if site.show_excerpts -%}

@@ -4,29 +4,19 @@
 layout: "home"
 ---
 
-# GitHub Copilot Hub
+# XMS Tech Hub
 
-Welcome to the GitHub Copilot Hub. Here you will find resources, articles, and tools related to GitHub Copilot. Like what you see and want to know more? Have a look at our [GitHub training program](https://academy.xebia.com/discipline/github/)! Want to know more about Microsoft AI in general? Check out our [Microsoft AI Hub](https://ai.xebia.ms) too!
+Welcome to the Xebia Microsoft Services Tech Hub. Here you will find resources, articles, and tools related to different topics. Content is often provided by the Xebia Microsoft Services team or people we know, but of course we'll also include other excellent content!
 
-<!-- Navigation Links Section -->
-{%- assign default_paths = site.pages | sort: "order" | map: "path" -%}
-{%- assign page_paths = site.header_pages | default: default_paths -%}
 <div class="bottom-navigation">
   <div class="nav-grid">
-    {%- for path in page_paths -%}
-      {%- assign my_page = site.pages | where: "path", path | first -%}
-      {%- if my_page.title -%}
-      <a href="{{ my_page.url | relative_url }}" class="nav-square">
-        <span class="nav-title">{{ my_page.title | escape }}</span>
-        <span class="nav-desc">
-          {%- if my_page.description -%}
-            {{ my_page.description | escape }}
-          {%- else -%}
-            {{ my_page.title | escape }}
-          {%- endif -%}
-        </span>
+      <a href="/ai" class="nav-square">
+        <span class="nav-title">Microsoft AI</span>
+        <span class="nav-desc">Everything on AI in the Microsoft space</span>
       </a>
-      {%- endif -%}
-    {%- endfor -%}
+      <a href="/github-copilot" class="nav-square">
+        <span class="nav-title">GitHub Copilot</span>
+        <span class="nav-desc">Full focus on GitHub Copilot</span>
+      </a>
   </div>
 </div>

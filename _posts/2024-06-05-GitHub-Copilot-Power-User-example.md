@@ -7,6 +7,7 @@ excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devopsjournal.io/blog/2024/06/05/GitHub-Copilot-Power-User"
 tags: [GitHub Copilot, power user, refactoring, GitHub Actions, YAML, tutorials, programming]
 categories: [Copilot, AI]
+permalink: /2024-06-05-GitHub-Copilot-Power-User-example.html
 ---
 
 Rob Bos demonstrates a real-world GitHub Copilot workflow by walking through a complete code refactoring task. The example shows how he extracted a script from a YAML pipeline (GitHub Actions) into a separate file using Copilot's assistance.<!--excerpt_end-->
