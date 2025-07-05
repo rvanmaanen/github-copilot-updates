@@ -1,0 +1,64 @@
+// Subnav styling
+.subnav-wrapper {
+    background: rgba(26, 26, 46, 0.9);
+    border-bottom: 1px solid $border-color;
+    backdrop-filter: blur(10px);
+}
+
+.site-subnav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    max-width: 1024px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 20px;
+    min-height: 40px; // Ensure consistent height even when empty
+}
+
+.subpage-link {
+    position: relative;
+    font-weight: 500;
+    text-decoration: none;
+    color: $primary-color;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+
+    &:hover {
+        background: rgba(189, 147, 249, 0.1);
+        color: $copilot-purple;
+    }
+
+    &.active {
+        background: rgba(189, 147, 249, 0.2);
+        color: $copilot-purple;
+        font-weight: 600;
+    }
+
+    &:visited {
+        color: $primary-color;
+
+        &:hover {
+            color: $copilot-purple;
+        }
+
+        &.active {
+            color: $copilot-purple;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .site-subnav {
+        padding: 8px 15px;
+        gap: 10px;
+    }
+    
+    .subpage-link {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}

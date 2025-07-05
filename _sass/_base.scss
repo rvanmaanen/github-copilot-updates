@@ -1,0 +1,69 @@
+// Set default font family and background for the entire site
+body {
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+    background-attachment: fixed;
+    color: $primary-color;
+    min-height: 100vh;
+}
+
+// Always show scrollbar to prevent layout shifts
+html {
+    overflow-y: scroll;
+    scrollbar-width: thin; // For Firefox
+}
+
+// Global link styling
+a {
+    color: $link-color;
+    transition: color 0.2s;
+
+    &:visited {
+        color: $copilot-purple;
+    }
+
+    &:hover,
+    &:focus {
+        color: $link-hover;
+    }
+}
+
+// Code styling
+.highlight {
+    background-color: rgba(189, 147, 249, 0.1);
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    color: $primary-color;
+}
+
+code {
+    background-color: transparent;
+}
+
+// Content styling
+.post-header {
+    margin-bottom: 0;
+}
+
+.post-title {
+    font-size: 2em;
+    letter-spacing: unset;
+    line-height: unset;
+}
+
+.page-content {
+    padding: 25px 0;
+
+    .wrapper {
+        background-color: $background-dark;
+        border: 1px solid rgba(127, 86, 217, 0.2);
+        border-radius: 15px;
+        padding: 10px 15px 20px 20px;
+        margin-top: 0;
+        backdrop-filter: blur(10px);
+    }
+}
+
+.footer-col {
+    margin: 0;
+}

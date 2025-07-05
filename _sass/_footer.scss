@@ -1,0 +1,22 @@
+// Footer specific styling
+.site-footer {
+    padding: 20px 0 10px 0;
+    color: #828282;
+    border-top: 1px solid white;
+    background-color: transparent;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+
+    a {
+        color: #828282;
+        
+        &:hover {
+            color: #a0a0a0;
+        }
+        
+        &:visited {
+            color: #828282;
+        }
+    }
+}

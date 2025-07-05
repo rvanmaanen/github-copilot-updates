@@ -1,0 +1,100 @@
+// Homepage specific grid - 50% width each
+.bottom-navigation-home .nav-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 100%;
+}
+
+// Home page specific styling for nav-squares with background images
+.bottom-navigation-home .nav-square {
+    min-height: 150px;
+    height: 150px;
+    padding: 20px;
+    aspect-ratio: unset; // Remove square aspect ratio for homepage
+    
+    // Dynamic background image styling
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(0);
+
+    // Add a subtle overlay to ensure text readability
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(26, 26, 46, 0.7);
+        z-index: 1;
+    }
+
+    // Ensure text content is above the overlay
+    .nav-content {
+        position: relative;
+        z-index: 2;
+        background: rgba(26, 26, 46, 0.3);
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(189, 147, 249, 0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    // Hover effect
+    &:hover {
+        &::before {
+            background: rgba(26, 26, 46, 0.2); // Much lighter overlay to let image shine through
+        }
+        
+        .nav-content {
+            background: rgba(26, 26, 46, 0.85); // Make content background more opaque on hover
+            border-color: rgba(189, 147, 249, 0.6); // Brighter border
+        }
+        
+        // Prevent underline on hover
+        text-decoration: none;
+    }
+}
+
+/* Responsive adjustments for homepage */
+@media (max-width: 768px) {
+    .bottom-navigation-home .nav-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        max-width: 600px;
+    }
+    
+    .bottom-navigation-home .nav-square {
+        min-height: 150px;
+        height: 150px;
+        padding: 15px;
+        
+        .nav-content {
+            padding: 12px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .bottom-navigation-home .nav-grid {
+        grid-template-columns: 1fr;
+        justify-content: center;
+        max-width: 400px;
+    }
+    
+    .bottom-navigation-home .nav-square {
+        min-height: 150px;
+        height: 150px;
+        padding: 15px;
+        
+        .nav-content {
+            padding: 10px;
+        }
+    }
+}

@@ -1,0 +1,105 @@
+// Tag filter button styling
+.tag-filter-btn {
+    margin: 2px;
+    padding: 4px 8px;
+    border: 1px solid rgba(189, 147, 249, 0.3);
+    background: rgba(230, 232, 235, 0.1);
+    color: #e6e8eb;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: rgba(189, 147, 249, 0.2);
+        border-color: rgba(189, 147, 249, 0.5);
+    }
+
+    &.active {
+        background: #9d72d9;
+        color: white;
+        border-color: #9d72d9;
+    }
+
+    &.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        background: rgba(50, 50, 50, 0.2);
+        border-color: rgba(100, 100, 100, 0.3);
+    }
+
+    &.clear-btn {
+        background: #d32f2f;
+        color: white;
+        border-color: #b71c1c;
+
+        &:hover {
+            background: #b71c1c;
+        }
+    }
+
+    &.toggle-btn {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+
+        &:hover {
+            background: #218838;
+            border-color: #218838;
+        }
+
+        &.active {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+    }
+
+    &.single-tag-btn {
+        &.active {
+            background: #9d72d9;
+            color: white;
+            border-color: #9d72d9;
+            opacity: 1;
+            border-style: solid;
+        }
+
+        &.disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            background: rgba(30, 30, 30, 0.3);
+            border-color: rgba(80, 80, 80, 0.4);
+        }
+
+        // Tag filter button visibility
+        display: none; // Hide single-occurrence tags by default
+
+        &.show {
+            display: inline-block; // Show single-occurrence tags when 'More' is clicked
+        }
+    }
+}
+
+// Default visibility for regular tag filter buttons
+.tag-filter-btn {
+    display: inline-block; // Show all buttons by default
+}
+
+.date-filter-btn {
+    background: rgba(189, 147, 249, 0.4);
+    border-color: rgba(189, 147, 249, 0.4);
+
+    &:hover {
+        background: #9d72d9;
+        color: white;
+        border-color: #9d72d9;
+    }
+}
+
+// Ensure active state persists on mobile
+@media (pointer: coarse) {
+    .tag-filter-btn.active {
+        background: #9d72d9 !important;
+        color: white !important;
+        border-color: #9d72d9 !important;
+    }
+}

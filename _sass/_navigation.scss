@@ -1,0 +1,96 @@
+// Navigation grid styling
+.bottom-navigation {
+    padding-bottom: 10px;
+}
+
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-content: center;
+    
+    // Responsive grid adjustments
+    @media (min-width: 1200px) {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        max-width: 1200px;
+    }
+    
+    @media (min-width: 1000px) and (max-width: 1199px) {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        max-width: 1000px;
+    }
+    
+    @media (min-width: 800px) and (max-width: 999px) {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        max-width: 800px;
+    }
+    
+    @media (min-width: 600px) and (max-width: 799px) {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        max-width: 600px;
+    }
+    
+    @media (max-width: 599px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Navigation square styling
+.nav-square {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+    height: auto;
+    padding: 20px;
+    background: $copilot-blue;
+    border: 1px solid $copilot-purple;
+    border-radius: 12px;
+    text-decoration: none;
+    color: $primary-color;
+    transition: all 0.3s ease;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(189, 147, 249, 0.08);
+    aspect-ratio: 1; // Ensures square shape
+
+    &:hover {
+        transform: scale(1.05);
+        background: $copilot-blue-hover;
+        box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
+        text-decoration: none;
+        color: $primary-color;
+    }
+}
+
+// Navigation titles and descriptions
+.nav-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: $primary-color;
+}
+
+.nav-desc {
+    font-size: 14px;
+    line-height: 1.4;
+    color: $primary-color;
+}
+
+/* Responsive adjustments for navigation */
+@media (max-width: 768px) {
+    .nav-square {
+        min-height: 100px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-square {
+        min-height: 80px;
+        padding: 10px;
+    }
+}

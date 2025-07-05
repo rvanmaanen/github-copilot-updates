@@ -1,0 +1,14 @@
+// Override default variables for width
+$content-width: 1024px !default;
+$on-palm: 800px !default;
+$on-laptop: 1024px !default;
+
+// Color variables for consistency
+$primary-color: #e6e8eb !default;
+$copilot-purple: #bd93f9 !default;
+$copilot-blue: rgba(31, 111, 235, 0.10) !default;
+$copilot-blue-hover: rgba(31, 111, 235, 0.18) !default;
+$link-color: #58a6ff !default;
+$link-hover: #79c0ff !default;
+$background-dark: rgba(26, 26, 46, 0.8) !default;
+$border-color: rgba(189, 147, 249, 0.2) !default;

@@ -1,0 +1,110 @@
+// Header specific styling
+.site-header {
+    padding: 10px 0;
+    color: $primary-color;
+    border-bottom: 1px solid white;
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+    .wrapper {
+        padding-right: 10px;
+    }
+
+    .site-title {
+        color: $primary-color;
+        line-height: 0;
+    }
+
+    .site-nav {
+        .page-link {
+            color: $primary-color;
+        }
+    }
+
+    a {
+        color: $primary-color;
+
+        &:visited {
+            color: $primary-color;
+        }
+
+        &:hover {
+            color: $copilot-purple;
+        }
+    }
+}
+
+// Custom page link styles
+a.page-link {
+    position: relative;
+    font-weight: 600;
+    text-decoration: none;
+    color: #ffffff;
+
+    @media only screen and (min-width: 800px) {
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: $copilot-purple;
+            transition: width 0.3s ease-in-out;
+        }
+
+        &:hover::after,
+        &.active::after {
+            width: 100%;
+        }
+    }
+}
+
+// Special Contact button styling
+.site-header .page-link-xebia {
+    font-size: 14px;
+    font-weight: 600;
+    background-color: rgba(230, 232, 235, 0.1);
+    color: $primary-color;
+    text-decoration: none;
+    padding: 8px 16px 10px 16px;
+    border-radius: 15px;
+    margin-right: 9px;
+    border: 2px solid $copilot-purple;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(189, 147, 249, 0.3);
+
+    &:hover {
+        background-color: $copilot-purple;
+        color: $primary-color;
+        border-color: $copilot-purple;
+        box-shadow: 0 4px 12px rgba(189, 147, 249, 0.4);
+        transform: translateY(-1px);
+    }
+
+    &:visited {
+        color: $primary-color;
+    }
+
+    &:visited:hover {
+        color: $primary-color;
+    }
+}
+
+// Mobile navigation
+@media only screen and (max-width: 800px) {
+    .site-nav {
+        background-color: rgba(26, 26, 46, 0.9);
+        border: 1px solid $border-color;
+        margin-top: 10px;
+        border-radius: 8px;
+        z-index: 1000;
+        position: relative;
+    }
+}
+
+.site-nav .menu-icon > svg {
+    fill: $primary-color;
+}
