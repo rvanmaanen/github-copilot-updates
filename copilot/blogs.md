@@ -8,7 +8,7 @@ order: 2
 
 {%- assign date_format = "%Y-%m-%d" -%}
 
-{%- assign posts = site.posts | sort: 'date' | reverse  -%}
+{%- assign posts = site.posts | where: "categories", "Copilot" | sort: 'date' | reverse  -%}
 {% include tag-filter.html %}
 
 <ul class="post-list">

@@ -5,7 +5,8 @@ description: "{{DESCRIPTION}}"
 author: "{{AUTHOR}}"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "{{CANONICAL_URL}}"
-tags: "{{TAGS}}"
+tags: "[{{TAGS}}]"
+categories: "[{{CATEGORIES}}]"
 feed_name: "{{FEEDNAME}}"
 feed_url: "{{FEEDURL}}"
 ---

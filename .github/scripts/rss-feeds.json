@@ -1,20 +1,48 @@
 [
   {
-    "name": "GitHub Blog",
+    "name": "GitHub",
     "url": "https://github.blog/feed/",
-    "category": "GitHub",
-    "description": "Updates, ideas, and inspiration from GitHub to help developers build and design software"
+    "outputDir": "_news"
   },
   {
-    "name": "VS Code Blog", 
-    "url": "https://code.visualstudio.com/feed.xml",
-    "category": "VS Code",
-    "description": "Learn what's new in Visual Studio Code releases and blog posts"
+    "name": "DevBlog GitHub Copilot",
+    "url": "https://devblogs.microsoft.com/visualstudio/tag/github-copilot/feed/",
+    "outputDir": "_news"
   },
   {
-    "name": "Microsoft Developer Blog",
-    "url": "https://devblogs.microsoft.com/feed/",
-    "category": "Microsoft",
-    "description": "Get the latest information, insights, and news from Microsoft for developers"
+    "name": "DevBlog Copilot",
+    "url": "https://devblogs.microsoft.com/visualstudio/tag/copilot/feed/",
+    "outputDir": "_news"
+  },
+  {
+    "name": "DevBlog Azure AI Foundry",
+    "url": "https://devblogs.microsoft.com/foundry/feed/",
+    "outputDir": "_news"
+  },
+  {
+    "name": "Microsoft",
+    "url": "https://news.microsoft.com/source/feed/",
+    "outputDir": "_news"
+  },
+  {
+    "name": "Rob Bos",
+    "url": "https://devopsjournal.io/blog/atom.xml",
+    "outputDir": "_posts"
+  },
+  {
+    "name": "Hidde de Smet",
+    "url": "https://hiddedesmet.com/feed.xml",
+    "outputDir": "_posts"
+  },
+  {
+    "name": "Jesse Houwing",
+    "url": "https://jessehouwing.net/rss/",
+    "outputDir": "_posts"
+  },
+  {
+    "name": "Jesse Swart",
+    "url": "https://blog.jesseswart.nl/index.xml",
+    "outputDir": "_posts"
   }
 ]
+

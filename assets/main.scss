@@ -444,4 +444,13 @@ html {
     border-color: #9d72d9;
 }
 
+// Ensure active state persists on mobile
+@media (pointer: coarse) {
+  .tag-filter-btn.active {
+    background: #9d72d9 !important;
+    color: white !important;
+    border-color: #9d72d9 !important;
+  }
+}
+
 @import "minima";

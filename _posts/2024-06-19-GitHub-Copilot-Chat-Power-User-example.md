@@ -6,6 +6,7 @@ description: "Learn how much more you can get out of GitHub Copilot Chat from th
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devopsjournal.io/blog/2024/06/19/GitHub-Copilot-Chat-Power-User"
 tags: [GitHub Copilot, GitHub Copilot Chat, power user, API, programming, tutorials, video, scripting]
+categories: [Copilot, AI]
 ---
 
 Rob Bos demonstrates advanced GitHub Copilot Chat techniques by walking through the process of creating a script to interact with the GitHub API. In this practical tutorial, he shows how to get the most value from the AI pair programmer when tackling complex tasks.<!--excerpt_end-->

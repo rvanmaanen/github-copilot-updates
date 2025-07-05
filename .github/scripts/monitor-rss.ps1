@@ -191,17 +191,24 @@ function Invoke-RssFeedsProcessor {
     )
 
     Write-Host "Processing feed: $($feedConfig.name)"
-        
-    # Fetch RSS feed with retry logic (3 attempts, exponential backoff)
-    $maxAttempts = 3
+
+    # Fetch RSS feed with retry logic (5 attempts, exponential backoff)
+    $maxAttempts = 1
     $attempt = 0
     $success = $false
     $xmlDoc = $null
     
     while (-not $success -and $attempt -lt $maxAttempts) {
         try {
+            $response = Invoke-WebRequest -Uri $feedConfig.url -UseBasicParsing -SkipHttpErrorCheck
+            if ($response.StatusCode -ne 200) {
+                throw "Failed to fetch RSS feed: $($feedConfig.url). Status code: $($response.StatusCode)"
+            }
+            $xmlContent = $response.Content
+            
+            # Load the XML content from the string
             $xmlDoc = New-Object System.Xml.XmlDocument
-            $xmlDoc.Load($feedConfig.url)
+            $xmlDoc.LoadXml($xmlContent)
             $success = $true
         }
         catch {
@@ -220,6 +227,49 @@ function Invoke-RssFeedsProcessor {
                 
     # Get items from the XML document
     $rawItems = Get-FeedItems -XmlDoc $xmlDoc
+
+    # Extract feed-level author as fallback
+    $feedLevelAuthor = $null
+    
+    # For RSS feeds, look for managingEditor or webMaster in channel
+    $channelNode = $xmlDoc.SelectSingleNode('//channel')
+    if ($channelNode) {
+        $managingEditor = Get-ElementByName $channelNode 'managingEditor'
+        if ($managingEditor) {
+            $feedLevelAuthor = Get-XmlElementValue $managingEditor
+        }
+        
+        if (-not $feedLevelAuthor) {
+            $webMaster = Get-ElementByName $channelNode 'webMaster'
+            if ($webMaster) {
+                $feedLevelAuthor = Get-XmlElementValue $webMaster
+            }
+        }
+    }
+    
+    # For Atom feeds, look for author in feed element
+    if (-not $feedLevelAuthor) {
+        $feedNode = $xmlDoc.SelectSingleNode('//feed')
+        if (-not $feedNode) {
+            $feedNode = $xmlDoc.SelectSingleNode('//*[local-name()="feed"]')
+        }
+        
+        if ($feedNode -and $feedNode.ChildNodes) {
+            foreach ($childNode in $feedNode.ChildNodes) {
+                if ($childNode.LocalName -eq 'author') {
+                    foreach ($authorChild in $childNode.ChildNodes) {
+                        if ($authorChild.LocalName -eq 'name') {
+                            $feedLevelAuthor = Get-XmlElementValue $authorChild
+                            break
+                        }
+                    }
+                    if ($feedLevelAuthor) { break }
+                }
+            }
+        }
+    }
+    
+    Write-Host "Feed-level author: $feedLevelAuthor"
     
     # Ensure we have an array and get count safely
     if ($rawItems -is [array]) {
@@ -312,16 +362,16 @@ function Invoke-RssFeedsProcessor {
         foreach ($field in $authorFields) {
             $authorNode = Get-ElementByName $rawItem $field
             if ($authorNode) {
-                $author = Get-XmlElementValue $authorNode
-                break
-            }
-            # Also try author/name for Atom feeds
-            if (-not $author -and $field -eq 'author') {
-                $authorNameNode = Get-ElementByName $authorNode 'name'
-                if ($authorNameNode) {
-                    $author = Get-XmlElementValue $authorNameNode
+                # For Atom feeds, check if this is a complex author element with name child
+                $nameNode = Get-ElementByName $authorNode 'name'
+                if ($nameNode) {
+                    $author = Get-XmlElementValue $nameNode
                 }
-            }
+                else {
+                    $author = Get-XmlElementValue $authorNode
+                }
+                break
+            }   
         }
         
         # If still no author, try to find dc:creator by searching through child nodes
@@ -334,14 +384,33 @@ function Invoke-RssFeedsProcessor {
             }
         }
         
+        # For Atom feeds, try to find author/name directly
         if (-not $author) {
-            throw "No author found for RSS item '$title'. Raw item: $($rawItem.OuterXml)"
+            foreach ($childNode in $rawItem.ChildNodes) {
+                if ($childNode.LocalName -eq 'author') {
+                    foreach ($authorChild in $childNode.ChildNodes) {
+                        if ($authorChild.LocalName -eq 'name') {
+                            $author = Get-XmlElementValue $authorChild
+                            break
+                        }
+                    }
+                    if ($author) { break }
+                }
+            }
+        }
+        
+        # If no item-level author found, use feed-level author as fallback
+        if (-not $author) {
+            $author = $feedLevelAuthor
+        }
+        
+        if (-not $author) {
+            Write-Host "No author found for RSS item '$title', using feedname '$($feedConfig.name)' as fallback"
+            $author = $feedConfig.name
         }
 
-        # Extract categories
-        $categoryValues = @()
-        
-        # Get all category elements
+        # Extract tags
+        $tags = @()
         foreach ($childNode in $rawItem.ChildNodes) {
             if ($childNode.LocalName -eq 'category') {
                 $catValue = $null
@@ -351,38 +420,28 @@ function Invoke-RssFeedsProcessor {
                     # For RSS feeds, category is the text content
                     $catValue = Get-XmlElementValue $childNode
                 }
-                if ($catValue) {
-                    # Replace spaces with underscores instead of HTML encoding
-                    $underscoreCatValue = $catValue.Trim() -replace '\s+', '_'
-                    $categoryValues += $underscoreCatValue
-                }
+               
+                $tags += $catValue.Trim()
             }
-        }
 
-        # Fallback to tags if no categories found
-        if ($categoryValues.Count -eq 0) {
-            foreach ($childNode in $rawItem.ChildNodes) {
-                if ($childNode.LocalName -eq 'tag' -or $childNode.LocalName -eq 'tags') {
-                    $tagValue = Get-XmlElementValue $childNode
-                    if ($tagValue) {
-                        $underscoreTagValue = $tagValue.Trim() -replace '\s+', '_'
-                        $categoryValues += $underscoreTagValue
-                    }
+            if ($childNode.LocalName -eq 'tag' -or $childNode.LocalName -eq 'tags') {
+                $tagValue = Get-XmlElementValue $childNode
+                if ($tagValue) {
+                    $tags += $tagValue.Trim()
                 }
             }
         }
         
-        # Always ensure we have the feed category
-        if ($feedConfig.category -and $categoryValues -notcontains $feedConfig.category) {
-            $categoryValues += $feedConfig.category
+        $categories = @()
+        if ($description -match '\bAI\b' -or $description -match '\bArtificial Intelligence\b' -or $description -match '\Semantic Kernel\b' -or $description -match '\bFoundry\b') {
+            $categories += 'AI'
         }
-        
-        # Join categories with spaces
-        $category = ($categoryValues | Where-Object { $_ -and $_.Length -gt 0 }) -join ' '
-        
-        # Fallback to feed category if still empty
-        if (-not $category -or $category.Length -eq 0) {
-            $category = $feedConfig.category
+        if ($description -match '\bCopilot\b') {
+            $categories += 'Copilot'
+        }
+        if ($categories.Count -eq 0) {
+            Write-Host "No categories found, skipping item: $title"
+            continue;
         }
 
         $normalizedItem = [PSCustomObject]@{
@@ -391,29 +450,21 @@ function Invoke-RssFeedsProcessor {
             pubDate     = $pubDate
             description = $description
             author      = $author
-            category    = $category
+            tags        = $tags -join ','
+            categories  = $categories -join ','
         }
             
         $items += $normalizedItem
     }
 
-    Write-Host "Found $($items.Count) items in feed: $($feedConfig.name)"
-                
-    # Get latest items from the last day
     $latestItems = @($items | Where-Object { 
             (((Get-Date) - $_.pubDate).Days -le 365)
         })
 
-    Write-Host "Found $($latestItems.Count) likely new items"
+    Write-Host "Found $($latestItems.Count) possibly new items in feed: $($feedConfig.name)"
                 
     foreach ($item in $latestItems) {
-        $title = $item.title
-        $link = $item.link
-        $pubDate = $item.pubDate
-        $author = $item.author
-        $tags = $item.category
-
-        $filename = "$($pubDate.ToString('yyyy-MM-dd'))-$(Get-SanitizedFilename $title).md"
+        $filename = "$($item.pubDate.ToString('yyyy-MM-dd'))-$(Get-SanitizedFilename $item.title).md"
         $filePath = Join-Path $OutputDir $filename
 
         # If file exists and -Recreate is not specified, skip to next item
@@ -428,12 +479,7 @@ function Invoke-RssFeedsProcessor {
             continue
         }
                     
-        $markdownContent = Get-Content $templatePath -Raw
-            
-        $title = Get-FrontMatterValue $title
-        $author = Get-FrontMatterValue $author
-        $description = Get-FrontMatterValue $item.description
-        $descriptionSummary = $description -replace ' The post .*? first on .*', ''
+        $descriptionSummary = (Get-FrontMatterValue $description) -replace ' The post .*? first on .*', ''
         if ($descriptionSummary.Length -gt 100) {
             $descriptionSummary = $descriptionSummary.Substring(0, [Math]::Min(100, $descriptionSummary.Length)) + '...' # Truncate to 100 characters
         }
@@ -452,18 +498,21 @@ function Invoke-RssFeedsProcessor {
         $content = $content -replace '\s+', ' '
 
         # Perform string replacements
-        $markdownContent = $markdownContent -replace '{{TITLE}}', $title
-        $markdownContent = $markdownContent -replace '{{AUTHOR}}', $author
-        $markdownContent = $markdownContent -replace '{{DESCRIPTION}}', $descriptionSummary
-        $markdownContent = $markdownContent -replace '{{CANONICAL_URL}}', $link
-        $markdownContent = $markdownContent -replace '{{TAGS}}', $tags
-        $markdownContent = $markdownContent -replace '{{FEEDNAME}}', $feedConfig.name
+        $markdownContent = Get-Content $templatePath -Raw
+        $markdownContent = $markdownContent -replace '{{TITLE}}', (Get-FrontMatterValue $item.title)
+        $markdownContent = $markdownContent -replace '{{AUTHOR}}', (Get-FrontMatterValue $item.author)
+        $markdownContent = $markdownContent -replace '{{DESCRIPTION}}', (Get-FrontMatterValue $descriptionSummary)
+        $markdownContent = $markdownContent -replace '{{CANONICAL_URL}}', $item.link
+        $markdownContent = $markdownContent -replace '{{TAGS}}', (Get-FrontMatterValue $item.tags)
+        $markdownContent = $markdownContent -replace '{{FEEDNAME}}', (Get-FrontMatterValue $feedConfig.name)
         $markdownContent = $markdownContent -replace '{{FEEDURL}}', $feedConfig.url
         $markdownContent = $markdownContent -replace '{{CONTENT}}', $content
+        $markdownContent = $markdownContent -replace '{{DATE}}', (Get-FrontMatterValue $item.pubDate)
+        $markdownContent = $markdownContent -replace '{{CATEGORIES}}', (Get-FrontMatterValue $item.categories)
 
         # Create the file
         Set-Content -Path $filePath -Value $markdownContent -Encoding UTF8 -Force
-        Write-Host "Created file: $filename for: $($title). Waiting 5 seconds to avoid rate limiting..."
+        #Write-Host "Created file: $filename for: $($title). Waiting 5 seconds to avoid rate limiting..."
         #Start-Sleep -Seconds 5
     }
 }
@@ -478,13 +527,18 @@ if (-not (Test-Path $feedsConfigPath)) {
     
 $feedsConfig = Get-Content $feedsConfigPath | ConvertFrom-Json
 
-foreach ($feedConfig in $feedsConfig) {
-    Invoke-RssFeedsProcessor `
-        -FeedConfig $feedConfig `
-        -Token $env:GITHUB_AI_TOKEN `
-        -Model "openai/gpt-4.1" `
-        -OutputDir "$PSScriptRoot/../../_news" `
-        -Recreate
+try {
+    foreach ($feedConfig in $feedsConfig) {
+        Invoke-RssFeedsProcessor `
+            -FeedConfig $feedConfig `
+            -Token $env:GITHUB_AI_TOKEN `
+            -Model "openai/gpt-4.1" `
+            -OutputDir "$PSScriptRoot/../../$($feedConfig.outputDir)" `
+            -Recreate
+    }
+}
+catch {
+    Write-Error ("$($_.Exception.Message)" + "$($_.ScriptStackTrace)")
 }
 
 Write-Host "RSS Feed Monitor completed successfully"

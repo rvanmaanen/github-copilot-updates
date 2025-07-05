@@ -6,6 +6,7 @@ description: "Discover how GitHub Copilot enhances the debugging experience in V
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/visualstudio/simplified-code-refinement-and-debugging-with-github-copilot-chat/"
 tags: [GitHub Copilot, Visual Studio, debugging, AI assistance, development tools, Microsoft]
+categories: [Copilot, AI]
 ---
 
 Visual Studio's integration with GitHub Copilot Chat has been significantly enhanced to provide developers with powerful AI-assisted debugging capabilities. The new features move beyond code completions to offer in-depth analysis and explanations of how code works, directly within your debugging workflow.<!--excerpt_end-->
