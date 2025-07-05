@@ -27,7 +27,7 @@ function Invoke-ChatCompletion {
 
                 The content should be an extensive summary of the article. It should be well structured, organized and in markdown format. In the first 200 characters include the author's name as part of the introduction. After that introduction put the text <!--excerpt_end-->. Make sure there is a space and then continue with the rest of the content.
 
-                The categories should either be 'AI' or 'Copilot' or both or neither depending on the content of the article and should be an array of strings. If it's neither, the array should be empty. Only include 'AI' if the article directly is about Azure AI Service, Azure AI Foundry, Semantic Kernel or other technical AI software development concepts. This means Infrastructure as Code or Azure by itself is not enough. Only include 'Copilot' if the article discusses GitHub Copilot. If both are relevant, include both in the array. If you include Copilot, always include AI as well, but not the other way around. If you are not sure, leave the array empty.
+                The categories should either be 'AI' or 'Copilot' or both or neither. Analyze the article provided to determine this. The categories should be an array of strings. If you include Copilot, always include AI as well, but not the other way around. If you are not sure, leave the array empty.
 
                 The tags should be an array of relevant keywords based on the contents of the article. The tags should not include generic terms like 'news' or 'update'."
             },
@@ -202,7 +202,7 @@ function Invoke-RssFeedsProcessor {
         [int]$DaysToLookBack = 365
     )
 
-    Write-Host "Processing feed: $($feedConfig.name)"
+    Write-Host "Processing feed: $($feedConfig.name) ($($feedConfig.url))"
 
     # Fetch RSS feed with retry logic (5 attempts, exponential backoff)
     $maxAttempts = 1
@@ -281,7 +281,9 @@ function Invoke-RssFeedsProcessor {
         }
     }
     
-    Write-Host "Feed-level author: $feedLevelAuthor"
+    if ($feedLevelAuthor) {
+        Write-Host "Feed-level author: $feedLevelAuthor"
+    }
     
     # Ensure we have an array and get count safely
     if ($rawItems -is [array]) {
@@ -294,8 +296,6 @@ function Invoke-RssFeedsProcessor {
     else {
         throw "No items found in RSS feed: $($feedConfig.url)"
     }
-    
-    Write-Host "Found $itemCount items in XML feed"
     
     # Convert items to normalized structure
     $items = @()
@@ -450,10 +450,11 @@ function Invoke-RssFeedsProcessor {
 
     $latestItems = @($items | Where-Object { 
             (((Get-Date) - $_.pubDate).Days -le $DaysToLookBack)
-        } | Sort-Object pubDate -Descending | Select-Object -First $MaxItemsPerFeed)
+        } | Sort-Object pubDate -Descending)
 
-    Write-Host "Found $($latestItems.Count) possibly new items in feed: $($feedConfig.name) (limited to $MaxItemsPerFeed items within $DaysToLookBack days)"
-                
+    Write-Host "Found $($latestItems.Count) items posted at most $DaysToLookBack days ago"
+    
+    $filesCreated = 0
     foreach ($item in $latestItems) {
         $filename = "$($item.pubDate.ToString('yyyy-MM-dd'))-$(Get-SanitizedFilename $item.title).md"
         $filePath = Join-Path $OutputDir $filename
@@ -551,7 +552,16 @@ function Invoke-RssFeedsProcessor {
 
         # Create the file
         Set-Content -Path $filePath -Value $markdownContent -Encoding UTF8 -Force
-        Write-Host "Created file: $filename. Waiting 10 seconds to avoid rate limiting..."
+        $filesCreated++
+        Write-Host "Created file: $filename ($filesCreated/$MaxItemsPerFeed)."
+        
+        # Check if we've reached the maximum before waiting
+        if ($filesCreated -ge $MaxItemsPerFeed) {
+            Write-Host "Reached maximum of $MaxItemsPerFeed files for feed: $($feedConfig.name)"
+            break
+        }
+        
+        Write-Host "Waiting 10 seconds to avoid rate limiting..."
         Start-Sleep -Seconds 10
     }
 }
