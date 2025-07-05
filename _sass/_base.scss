@@ -22,9 +22,12 @@ a {
         color: $copilot-purple;
     }
 
-    &:hover,
-    &:focus {
-        color: $link-hover;
+    // Hover effects only on devices that support hover
+    @media (hover: hover) {
+        &:hover,
+        &:focus {
+            color: $link-hover;
+        }
     }
 }
 
@@ -66,4 +69,9 @@ code {
 
 .footer-col {
     margin: 0;
+}
+
+// Section title styling
+.section-title {
+    margin-bottom: 0;
 }

@@ -27,9 +27,12 @@
     transition: all 0.3s ease;
     font-size: 14px;
 
-    &:hover {
-        background: rgba(189, 147, 249, 0.1);
-        color: $copilot-purple;
+    // Hover effects only on devices that support hover
+    @media (hover: hover) {
+        &:hover {
+            background: rgba(189, 147, 249, 0.1);
+            color: $copilot-purple;
+        }
     }
 
     &.active {
@@ -41,8 +44,11 @@
     &:visited {
         color: $primary-color;
 
-        &:hover {
-            color: $copilot-purple;
+        // Hover effects only on devices that support hover
+        @media (hover: hover) {
+            &:hover {
+                color: $copilot-purple;
+            }
         }
 
         &.active {

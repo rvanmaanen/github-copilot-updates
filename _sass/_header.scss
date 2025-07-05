@@ -30,8 +30,11 @@
             color: $primary-color;
         }
 
-        &:hover {
-            color: $copilot-purple;
+        // Hover effects only on devices that support hover
+        @media (hover: hover) {
+            &:hover {
+                color: $copilot-purple;
+            }
         }
     }
 }
@@ -55,9 +58,12 @@ a.page-link {
             transition: width 0.3s ease-in-out;
         }
 
-        &:hover::after,
-        &.active::after {
-            width: 100%;
+        // Hover effects only on devices that support hover
+        @media (hover: hover) {
+            &:hover::after,
+            &.active::after {
+                width: 100%;
+            }
         }
     }
 }
@@ -76,20 +82,26 @@ a.page-link {
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(189, 147, 249, 0.3);
 
-    &:hover {
-        background-color: $copilot-purple;
-        color: $primary-color;
-        border-color: $copilot-purple;
-        box-shadow: 0 4px 12px rgba(189, 147, 249, 0.4);
-        transform: translateY(-1px);
+    // Hover effects only on devices that support hover
+    @media (hover: hover) {
+        &:hover {
+            background-color: $copilot-purple;
+            color: $primary-color;
+            border-color: $copilot-purple;
+            box-shadow: 0 4px 12px rgba(189, 147, 249, 0.4);
+            transform: translateY(-1px);
+        }
     }
 
     &:visited {
         color: $primary-color;
     }
 
-    &:visited:hover {
-        color: $primary-color;
+    // Hover effects only on devices that support hover
+    @media (hover: hover) {
+        &:visited:hover {
+            color: $primary-color;
+        }
     }
 }
 
@@ -107,4 +119,21 @@ a.page-link {
 
 .site-nav .menu-icon > svg {
     fill: $primary-color;
+}
+
+// Logo styling
+.site-title svg {
+    &.xebia-logo {
+        width: 100px;
+        padding-top: 14px;
+        margin-bottom: -7px;
+    }
+    
+    &.copilot-logo {
+        width: 50px;
+        padding-top: 14px;
+        margin-left: 20px;
+        margin-bottom: -7px;
+        margin-top: -9px;
+    }
 }

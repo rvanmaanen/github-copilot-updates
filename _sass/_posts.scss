@@ -29,12 +29,15 @@
         margin: 0;
         box-shadow: 0 2px 8px rgba(189, 147, 249, 0.08);
 
-        &:hover {
-            transform: scale(1.05);
-            background: $copilot-blue-hover;
-            box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
-            text-decoration: none;
-            color: inherit;
+        // Hover effects only on devices that support hover
+        @media (hover: hover) {
+            &:hover {
+                transform: scale(1.05);
+                background: $copilot-blue-hover;
+                box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
+                text-decoration: none;
+                color: inherit;
+            }
         }
 
         p {

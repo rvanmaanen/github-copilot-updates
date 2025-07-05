@@ -46,19 +46,21 @@
         text-align: center;
     }
 
-    // Hover effect
-    &:hover {
-        &::before {
-            background: rgba(26, 26, 46, 0.2); // Much lighter overlay to let image shine through
+    // Hover effect - only on devices that support hover
+    @media (hover: hover) {
+        &:hover {
+            &::before {
+                background: rgba(26, 26, 46, 0.2); // Much lighter overlay to let image shine through
+            }
+            
+            .nav-content {
+                background: rgba(26, 26, 46, 0.85); // Make content background more opaque on hover
+                border-color: rgba(189, 147, 249, 0.6); // Brighter border
+            }
+            
+            // Prevent underline on hover
+            text-decoration: none;
         }
-        
-        .nav-content {
-            background: rgba(26, 26, 46, 0.85); // Make content background more opaque on hover
-            border-color: rgba(189, 147, 249, 0.6); // Brighter border
-        }
-        
-        // Prevent underline on hover
-        text-decoration: none;
     }
 }
 
@@ -84,12 +86,6 @@
             padding: 12px;
             background: rgba(26, 26, 46, 0.6); // Slightly more opaque for text readability
         }
-        
-        &:hover {
-            .nav-content {
-                background: rgba(26, 26, 46, 0.8);
-            }
-        }
     }
 }
 
@@ -113,12 +109,6 @@
         .nav-content {
             padding: 10px;
             background: rgba(26, 26, 46, 0.7); // Ensure text is still readable
-        }
-        
-        &:hover {
-            .nav-content {
-                background: rgba(26, 26, 46, 0.85);
-            }
         }
     }
 }

@@ -9,9 +9,12 @@
     border-radius: 3px;
     transition: all 0.2s ease;
 
-    &:hover {
-        background: rgba(189, 147, 249, 0.2);
-        border-color: rgba(189, 147, 249, 0.5);
+    // Hover effects only on devices that support hover
+    @media (hover: hover) {
+        &:hover {
+            background: rgba(189, 147, 249, 0.2);
+            border-color: rgba(189, 147, 249, 0.5);
+        }
     }
 
     &.active {
@@ -32,8 +35,11 @@
         color: white;
         border-color: #b71c1c;
 
-        &:hover {
-            background: #b71c1c;
+        // Hover effects only on devices that support hover
+        @media (hover: hover) {
+            &:hover {
+                background: #b71c1c;
+            }
         }
     }
 
@@ -42,9 +48,12 @@
         color: white;
         border-color: #28a745;
 
-        &:hover {
-            background: #218838;
-            border-color: #218838;
+        // Hover effects only on devices that support hover
+        @media (hover: hover) {
+            &:hover {
+                background: #218838;
+                border-color: #218838;
+            }
         }
 
         &.active {
@@ -88,10 +97,13 @@
     background: rgba(189, 147, 249, 0.4);
     border-color: rgba(189, 147, 249, 0.4);
 
-    &:hover {
-        background: #9d72d9;
-        color: white;
-        border-color: #9d72d9;
+    // Hover effects only on devices that support hover
+    @media (hover: hover) {
+        &:hover {
+            background: #9d72d9;
+            color: white;
+            border-color: #9d72d9;
+        }
     }
 }
 
@@ -102,4 +114,9 @@
         color: white !important;
         border-color: #9d72d9 !important;
     }
+}
+
+// Tag filter container styling
+#tag-filters {
+    margin-bottom: 15px;
 }

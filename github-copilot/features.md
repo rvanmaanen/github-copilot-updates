@@ -34,7 +34,7 @@ This page provides a comprehensive overview of GitHub Copilot plans as of June t
   
   {% for entry in site.data.copilot_plans %}
     <div id="videos-{% for plan in entry.plans %}{{ plan.name | downcase | replace: ' ', '-' | replace: '+', 'plus' }}{% unless forloop.last %}-{% endunless %}{% endfor %}">
-      <h1 style="margin-bottom: 0px">
+      <h1 class="section-title">
         {% for plan in entry.plans %}{{ plan.name }}{% unless forloop.last %} & {% endunless %}{% endfor %}
       </h1>
       <hr />
