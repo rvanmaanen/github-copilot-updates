@@ -7,7 +7,7 @@ excerpt_separator: <!--excerpt_end-->
 image: "/assets/ai-validation/ai-ethics.png"
 permalink: "ai-validation-framework-part2"
 canonical_url: "https://hiddedesmet.com/ai-project-validation-framework-part2"
-permalink: /2025-06-02-AI-Project-Validation-Framework-Part2.html
+permalink: /blogs/2025-06-02-AI-Project-Validation-Framework-Part2.html
 ---
 
 In Part 2 of the AI project validation series, Hidde de Smet builds on the decision framework introduced in Part 1 by demonstrating its application through real-world examples and diving deep into the ethical considerations that every AI project must address.<!--excerpt_end--> The article explores how bias, privacy concerns, workforce impacts, and transparency issues can significantly affect AI implementation outcomes.

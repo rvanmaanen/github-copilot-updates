@@ -7,7 +7,7 @@ excerpt_separator: <!--excerpt_end-->
 image: "/assets/ai-validation/ai-the-right-decision.png"
 permalink: "ai-validation-framework-part3"
 canonical_url: "https://hiddedesmet.com/ai-project-validation-framework-part3"
-permalink: /2025-06-09-AI-Project-Validation-Framework-Part3.html
+permalink: /blogs/2025-06-09-AI-Project-Validation-Framework-Part3.html
 ---
 
 In the final installment of the AI project validation series, Hidde de Smet focuses on turning theory into practice by defining clear metrics for success, implementing effective pilot projects, and summarizing essential takeaways from the entire framework.<!--excerpt_end--> This concluding piece provides practical guidance on measuring AI project outcomes and using iterative approaches to minimize risks.

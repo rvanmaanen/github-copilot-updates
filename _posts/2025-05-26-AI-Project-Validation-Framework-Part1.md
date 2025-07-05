@@ -7,7 +7,7 @@ excerpt_separator: <!--excerpt_end-->
 image: "/assets/ai-validation/ai-validation.png"
 permalink: "ai-validation-framework-part1"
 canonical_url: "https://hiddedesmet.com/ai-project-validation-framework-part1"
-permalink: /2025-05-26-AI-Project-Validation-Framework-Part1.html
+permalink: /blogs/2025-05-26-AI-Project-Validation-Framework-Part1.html
 ---
 
 Before investing significant resources into AI development, it's crucial to determine whether AI is genuinely the most effective solution for your business problem. Hidde de Smet's comprehensive framework provides a structured decision tree to evaluate AI projects.<!--excerpt_end--> This is done through strategic alignment, business impact, feasibility, and ROI assessment, helping organizations make informed decisions about when to pursue AI initiatives and when to consider alternatives.

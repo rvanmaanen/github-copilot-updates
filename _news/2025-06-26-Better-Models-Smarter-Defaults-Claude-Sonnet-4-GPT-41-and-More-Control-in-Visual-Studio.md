@@ -10,7 +10,7 @@ categories: [AI,Copilot]
 feed_name: "DevBlog GitHub Copilot"
 feed_url: "https://devblogs.microsoft.com/visualstudio/tag/github-copilot/feed/"
 date: 2025-06-26T01:24:03Z
-permalink: /2025-06-26-Better-Models-Smarter-Defaults-Claude-Sonnet-4-GPT-41-and-More-Control-in-Visual-Studio.html
+permalink: /news/2025-06-26-Better-Models-Smarter-Defaults-Claude-Sonnet-4-GPT-41-and-More-Control-in-Visual-Studio.html
 ---
 
 In this article, Rhea Patel explores the latest enhancements to the Copilot experience in Visual Studio, bringing significant improvements for developers. <!--excerpt_end--> 

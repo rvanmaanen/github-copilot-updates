@@ -10,7 +10,7 @@ categories: [AI]
 feed_name: "DevBlog Azure AI Foundry"
 feed_url: "https://devblogs.microsoft.com/foundry/feed/"
 date: 2025-06-30T17:00:36Z
-permalink: /2025-06-30-Whats-new-in-Azure-AI-Foundry-June-2025.html
+permalink: /news/2025-06-30-Whats-new-in-Azure-AI-Foundry-June-2025.html
 ---
 
 In this article, Nick Brady examines the latest features and updates introduced to Azure AI Foundry as of June 2025, emphasizing new model releases, Agent Service GA, developer tool improvements, and portal upgrades. <!--excerpt_end--> 

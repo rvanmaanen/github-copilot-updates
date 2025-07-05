@@ -454,3 +454,67 @@ html {
 }
 
 @import "minima";
+
+// Subnav styling
+.subnav-wrapper {
+    background: rgba(26, 26, 46, 0.9);
+    border-bottom: 1px solid rgba(189, 147, 249, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.site-subnav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    max-width: 1024px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.subpage-link {
+    position: relative;
+    font-weight: 500;
+    text-decoration: none !important;
+    color: #e6e8eb !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+
+    &:hover {
+        background: rgba(189, 147, 249, 0.1);
+        color: #bd93f9 !important;
+    }
+
+    &.active {
+        background: rgba(189, 147, 249, 0.2);
+        color: #bd93f9 !important;
+        font-weight: 600;
+    }
+
+    &:visited {
+        color: #e6e8eb !important;
+    }
+
+    &:visited:hover {
+        color: #bd93f9 !important;
+    }
+
+    &:visited.active {
+        color: #bd93f9 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .site-subnav {
+        padding: 8px 15px;
+        gap: 10px;
+    }
+    
+    .subpage-link {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}

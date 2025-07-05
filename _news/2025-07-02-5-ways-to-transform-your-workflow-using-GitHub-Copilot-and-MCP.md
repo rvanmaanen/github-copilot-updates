@@ -10,7 +10,7 @@ categories: [AI,Copilot]
 feed_name: "GitHub"
 feed_url: "https://github.blog/feed/"
 date: 2025-07-02T19:44:02Z
-permalink: /2025-07-02-5-ways-to-transform-your-workflow-using-GitHub-Copilot-and-MCP.html
+permalink: /news/2025-07-02-5-ways-to-transform-your-workflow-using-GitHub-Copilot-and-MCP.html
 ---
 
 In this article, Klint Finley dives into the practical applications of MCP to optimize development processes. <!--excerpt_end--> 
