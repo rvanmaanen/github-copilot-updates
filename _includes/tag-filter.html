@@ -1,36 +1,34 @@
-{%- comment -%} Collect all tags from posts {%- endcomment -%}
+{%- comment -%} Collect and process all tags {%- endcomment -%}
 {%- assign all_tags_raw = "" | split: "" -%}
 {%- for post in posts -%}
   {%- if post.tags -%}
-    {%- comment -%} Handle both array and string formats {%- endcomment -%}
     {%- if post.tags.first -%}
-      {%- comment -%} Tags is an array (YAML format) {%- endcomment -%}
-      {%- for tag in post.tags -%}
-        {%- assign trimmed_tag = tag | strip -%}
-        {%- if trimmed_tag != '' -%}
-          {%- assign all_tags_raw = all_tags_raw | push: trimmed_tag -%}
-        {%- endif -%}
-      {%- endfor -%}
+      {%- comment -%} YAML array format {%- endcomment -%}
+      {%- assign all_tags_raw = all_tags_raw | concat: post.tags -%}
     {%- else -%}
-      {%- comment -%} Tags is a string (space-separated) {%- endcomment -%}
+      {%- comment -%} Space-separated string format {%- endcomment -%}
       {%- assign tag_words = post.tags | split: ' ' -%}
-      {%- for tag_word in tag_words -%}
-        {%- assign trimmed_tag = tag_word | strip -%}
-        {%- if trimmed_tag != '' -%}
-          {%- assign all_tags_raw = all_tags_raw | push: trimmed_tag -%}
-        {%- endif -%}
-      {%- endfor -%}
+      {%- assign all_tags_raw = all_tags_raw | concat: tag_words -%}
     {%- endif -%}
   {%- endif -%}
 {%- endfor -%}
 
-{%- if all_tags_raw.size > 0 -%}
+{%- comment -%} Clean and process tags {%- endcomment -%}
+{%- assign clean_tags = "" | split: "" -%}
+{%- for tag in all_tags_raw -%}
+  {%- assign clean_tag = tag | strip -%}
+  {%- if clean_tag != '' -%}
+    {%- assign clean_tags = clean_tags | push: clean_tag -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if clean_tags.size > 0 -%}
 
 {%- comment -%} Group tags by normalized version {%- endcomment -%}
 {%- assign processed_normalized = "" | split: "" -%}
 {%- assign final_tags = "" | split: "" -%}
 
-{%- for tag in all_tags_raw -%}
+{%- for tag in clean_tags -%}
   {%- assign normalized_tag = tag | replace: '_', ' ' | downcase -%}
   
   {%- unless processed_normalized contains normalized_tag -%}
@@ -38,7 +36,7 @@
     
     {%- comment -%} Find all variants for this normalized tag {%- endcomment -%}
     {%- assign variants = "" | split: "" -%}
-    {%- for candidate in all_tags_raw -%}
+    {%- for candidate in clean_tags -%}
       {%- assign candidate_normalized = candidate | replace: '_', ' ' | downcase -%}
       {%- if candidate_normalized == normalized_tag -%}
         {%- assign variants = variants | push: candidate -%}
@@ -50,16 +48,18 @@
     {%- assign tag_count = variants | size -%}
     
     {%- comment -%} Create properly capitalized display tag {%- endcomment -%}
-    {%- assign display_tag = best_variant | replace: '_', ' ' -%}
-    {%- assign words = display_tag | split: ' ' -%}
+    {%- assign words = best_variant | replace: '_', ' ' | split: ' ' -%}
     {%- assign capitalized_words = "" | split: "" -%}
     {%- for word in words -%}
-      {%- unless word == blank -%}
-        {%- assign first_char = word | slice: 0, 1 | upcase -%}
-        {%- assign rest_chars = word | slice: 1, 100 -%}
-        {%- assign capitalized_word = first_char | append: rest_chars -%}
+      {%- assign first_char = word | slice: 0, 1 -%}
+      {%- if first_char == first_char | upcase -%}
+        {%- comment -%} Word already starts with uppercase, keep as is {%- endcomment -%}
+        {%- assign capitalized_words = capitalized_words | push: word -%}
+      {%- else -%}
+        {%- comment -%} Capitalize first letter only {%- endcomment -%}
+        {%- assign capitalized_word = word | capitalize -%}
         {%- assign capitalized_words = capitalized_words | push: capitalized_word -%}
-      {%- endunless -%}
+      {%- endif -%}
     {%- endfor -%}
     {%- assign display_tag = capitalized_words | join: ' ' -%}
     
@@ -69,18 +69,8 @@
   {%- endunless -%}
 {%- endfor -%}
 
-{%- comment -%} Create tag info objects with occurrence counts {%- endcomment -%}
-{%- assign tag_objects = "" | split: "" -%}
-{%- for tag_info in final_tags -%}
-  {%- assign parts = tag_info | split: '|' -%}
-  {%- assign tag = parts[0] -%}
-  {%- assign count = parts[1] | plus: 0 -%}
-  {%- assign tag_with_count = tag | append: '|' | append: count -%}
-  {%- assign tag_objects = tag_objects | push: tag_with_count -%}
-{%- endfor -%}
-
 {%- comment -%} Sort all tags alphabetically {%- endcomment -%}
-{%- assign sorted_tag_objects = tag_objects | sort -%}
+{%- assign sorted_tag_objects = final_tags | sort -%}
 
 {%- comment -%} Add date filter tags {%- endcomment -%}
 {%- assign date_filters = 'Last 3 days,Last 7 days,Last 30 days,Last 365 days,All time' | split: ',' -%}
@@ -94,6 +84,7 @@
   {%- endfor -%}
   
   {%- comment -%} All tag buttons (multiple and single occurrence, sorted alphabetically) {%- endcomment -%}
+  {%- assign has_single_tags = false -%}
   {%- for tag_object in sorted_tag_objects -%}
     {%- assign parts = tag_object | split: '|' -%}
     {%- assign tag = parts[0] -%}
@@ -101,18 +92,8 @@
     {%- if count > 1 -%}
       <button class="tag-filter-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
     {%- else -%}
-      <button class="tag-filter-btn single-tag-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
-    {%- endif -%}
-  {%- endfor -%}
-  
-  {%- comment -%} Check if we have any single-occurrence tags to show the More button {%- endcomment -%}
-  {%- assign has_single_tags = false -%}
-  {%- for tag_object in sorted_tag_objects -%}
-    {%- assign parts = tag_object | split: '|' -%}
-    {%- assign count = parts[1] | plus: 0 -%}
-    {%- if count == 1 -%}
       {%- assign has_single_tags = true -%}
-      {%- break -%}
+      <button class="tag-filter-btn single-tag-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
     {%- endif -%}
   {%- endfor -%}
   
@@ -150,15 +131,10 @@ function initializeFilters() {
 
 function updateSingleTagsVisibility() {
   const singleTagButtons = document.querySelectorAll('.single-tag-btn');
-  singleTagButtons.forEach(btn => {
-    if (singleTagsVisible) {
-      btn.classList.add('show');
-    } else {
-      btn.classList.remove('show');
-    }
-  });
-  
   const toggleBtn = document.getElementById('toggle-single-tags');
+  
+  singleTagButtons.forEach(btn => btn.classList.toggle('show', singleTagsVisible));
+  
   if (toggleBtn) {
     toggleBtn.textContent = singleTagsVisible ? 'Less' : 'More';
     toggleBtn.classList.toggle('active', singleTagsVisible);
@@ -173,12 +149,19 @@ function toggleSingleTags() {
 
 function updateURL() {
   const url = new URL(window.location);
+  
   if (activeFilters.size > 0) {
     url.searchParams.set('filters', Array.from(activeFilters).join(','));
   } else {
     url.searchParams.delete('filters');
   }
-  url.searchParams[singleTagsVisible ? 'set' : 'delete']('showSingle', 'true');
+  
+  if (singleTagsVisible) {
+    url.searchParams.set('showSingle', 'true');
+  } else {
+    url.searchParams.delete('showSingle');
+  }
+  
   window.history.replaceState({}, '', url);
 }
 
@@ -186,6 +169,7 @@ function toggleFilter(tag) {
   const isDateFilter = dateFilters.includes(tag);
   
   if (isDateFilter) {
+    // Only allow one date filter at a time
     if (activeFilters.has(tag)) {
       activeFilters.delete(tag);
     } else {
@@ -193,7 +177,12 @@ function toggleFilter(tag) {
       activeFilters.add(tag);
     }
   } else {
-    activeFilters[activeFilters.has(tag) ? 'delete' : 'add'](tag);
+    // Toggle tag filter
+    if (activeFilters.has(tag)) {
+      activeFilters.delete(tag);
+    } else {
+      activeFilters.add(tag);
+    }
   }
   
   updateDisplay();
