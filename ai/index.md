@@ -7,6 +7,8 @@ permalink: "/ai.html"
 
 # Microsoft AI Hub
 
+Like what you see and want to know more? We provide many [AI training courses](https://academy.xebia.com/?s=ai&page=1)!
+
 <!-- Navigation Links Section -->
 {%- assign default_paths = site.pages | sort: "order" | map: "path" -%}
 {%- assign page_paths = site.header_pages | default: default_paths -%}

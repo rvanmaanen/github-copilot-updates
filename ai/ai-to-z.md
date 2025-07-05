@@ -1,7 +1,7 @@
 ---
 layout: "page"
 title: "A(i) to Z"
-description: "A starting point for learning about AI, covering the most important concepts, technologies, and tools."
+description: "A starting point for learning about AI."
 image: "/assets/ai-to-z/logo.png"
 permalink: "/ai/ai-to-z.html"
 order: 1

@@ -55,7 +55,6 @@
     text-align: center;
     backdrop-filter: blur(10px);
     box-shadow: 0 2px 8px rgba(189, 147, 249, 0.08);
-    aspect-ratio: 1; // Ensures square shape
 
     &:hover {
         transform: scale(1.05);
