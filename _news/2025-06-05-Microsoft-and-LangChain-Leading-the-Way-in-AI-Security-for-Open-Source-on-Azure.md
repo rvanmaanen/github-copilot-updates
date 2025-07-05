@@ -5,7 +5,7 @@ description: "For developers building in the field of AI, the industry moves so 
 author: "Marlene Mhangami"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/blog/microsoft-and-langchain-leading-the-way-in-ai-security-for-open-source-on-azure"
-tags: "AI Azure langchain python Microsoft"
+tags: "AI Azure langchain python Microsoft news"
 feed_name: "Microsoft Developer Blog"
 feed_url: "https://devblogs.microsoft.com/feed/"
 ---

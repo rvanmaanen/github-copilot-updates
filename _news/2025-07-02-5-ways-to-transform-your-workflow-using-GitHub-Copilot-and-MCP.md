@@ -5,7 +5,7 @@ description: "Learn how to streamline your development workflow with five differ
 author: "Klint Finley"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/ai-and-ml/github-copilot/5-ways-to-transform-your-workflow-using-github-copilot-and-mcp/"
-tags: "AI_&_ML GitHub_Copilot agent_mode MCP GitHub"
+tags: "AI_&_ML GitHub_Copilot agent_mode MCP GitHub news"
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---

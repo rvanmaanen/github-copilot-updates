@@ -5,7 +5,7 @@ description: "In today’s fast-paced digital world, keeping the Visual Studio M
 author: "Sean"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/blog/security-and-trust-in-visual-studio-marketplace"
-tags: "Extensions Package_Management Security Supply_Chain_Security Visual_Studio Visual_Studio_Code Microsoft"
+tags: "Extensions Package_Management Security Supply_Chain_Security Visual_Studio Visual_Studio_Code Microsoft news"
 feed_name: "Microsoft Developer Blog"
 feed_url: "https://devblogs.microsoft.com/feed/"
 ---

@@ -15,7 +15,7 @@ order: 1
   {%- for post in posts -%}
     {% include data-tags-builder.html %}
 
-    <li class="post-item" data-tags="{{ all_tags }}">
+    <li class="post-item" data-tags="{{ all_tags }}" data-date="{{ post_date_iso }}">
       <a href="{{ post.url | relative_url }}">
         {{ post.date | date: date_format }} - {{ post.title | escape }}
       </a>

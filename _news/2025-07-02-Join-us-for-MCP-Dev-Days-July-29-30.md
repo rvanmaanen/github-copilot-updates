@@ -5,7 +5,7 @@ description: "Get ready for two days of deep technical insight, community connec
 author: "Katie Savage, Marc Baiza"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/blog/join-us-for-mcp-dev-days-july-29-30"
-tags: "AI Announcement Developer_Events MCP Microsoft"
+tags: "AI Announcement Developer_Events MCP Microsoft news"
 feed_name: "Microsoft Developer Blog"
 feed_url: "https://devblogs.microsoft.com/feed/"
 ---

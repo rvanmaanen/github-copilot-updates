@@ -5,7 +5,7 @@ description: "Announcing the Next Edit Suggestions and Agent Mode for GitHub Cop
 author: "Brigit Murtaugh, Burke Holland"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://code.visualstudio.com/blogs/2025/02/12/next-edit-suggestions"
-tags: "blog VS Code"
+tags: "blog VS_Code Visual_Studio_Code news"
 feed_name: "VS Code Blog"
 feed_url: "https://code.visualstudio.com/feed.xml"
 ---

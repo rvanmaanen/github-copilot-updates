@@ -1,11 +1,17 @@
 {%- comment -%} Collect all raw tags from posts {%- endcomment -%}
 {%- assign all_tags_raw = "" | split: "" -%}
 {%- for post in posts -%}
-{%- if post.tags -%}
-{%- for tag in post.tags -%}
-    {%- assign all_tags_raw = all_tags_raw | push: tag -%}
-{%- endfor -%}
-{%- endif -%}
+  {%- if post.tags -%}
+    {%- for tag in post.tags -%}
+      {%- assign tag_items = tag | split: ' ' -%}
+      {%- for tag_item in tag_items -%}
+        {%- assign trimmed_tag = tag_item | strip -%}
+        {%- if trimmed_tag != '' -%}
+          {%- assign all_tags_raw = all_tags_raw | push: trimmed_tag -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endif -%}
 {%- endfor -%}
 
 {%- comment -%} Only proceed if we have tags {%- endcomment -%}
@@ -13,77 +19,132 @@
 
 {%- comment -%} Group tags by normalized version and select alphabetically first variant {%- endcomment -%}
 {%- assign tag_groups = "" | split: "" -%}
+{%- assign single_tag_groups = "" | split: "" -%}
 {%- assign processed_normalized = "" | split: "" -%}
 
 {%- for tag in all_tags_raw -%}
-{%- comment -%} Normalize: replace underscores with spaces, lowercase for comparison {%- endcomment -%}
-{%- assign normalized_key = tag | replace: '_', ' ' | downcase -%}
-
-{%- comment -%} Skip if we already processed this normalized tag {%- endcomment -%}
-{%- unless processed_normalized contains normalized_key -%}
-    {%- assign processed_normalized = processed_normalized | push: normalized_key -%}
-
-    {%- comment -%} Find all variants of this tag and pick the alphabetically first one {%- endcomment -%}
-    {%- assign variants = "" | split: "" -%}
+  {%- assign normalized_key = tag | replace: '_', ' ' | downcase -%}
+  
+  {%- comment -%} Skip if we already processed this normalized tag {%- endcomment -%}
+  {%- unless processed_normalized contains normalized_key -%}
+    
+    {%- comment -%} Count occurrences of this normalized tag {%- endcomment -%}
+    {%- assign tag_count = 0 -%}
     {%- for candidate in all_tags_raw -%}
-    {%- assign candidate_normalized = candidate | replace: '_', ' ' | downcase -%}
-    {%- if candidate_normalized == normalized_key -%}
-        {%- assign variants = variants | push: candidate -%}
-    {%- endif -%}
+      {%- assign candidate_normalized = candidate | replace: '_', ' ' | downcase -%}
+      {%- if candidate_normalized == normalized_key -%}
+        {%- assign tag_count = tag_count | plus: 1 -%}
+      {%- endif -%}
     {%- endfor -%}
     
-    {%- comment -%} Sort variants and take the first one {%- endcomment -%}
-    {%- assign sorted_variants = variants | sort -%}
+    {%- comment -%} Only include tags that occur more than once {%- endcomment -%}
+    {%- if tag_count > 1 -%}
+      {%- assign processed_normalized = processed_normalized | push: normalized_key -%}
 
-    {%- assign best_variant = sorted_variants[0] -%}
-    
-    {%- comment -%} Clean up the best variant: replace underscores with spaces, capitalize each word {%- endcomment -%}
-    {%- assign words_with_spaces = best_variant | replace: '_', ' ' -%}
-    {%- assign words_array = words_with_spaces | split: ' ' -%}
-    {%- assign capitalized_words = "" | split: "" -%}
-    
-    {%- for word in words_array -%}
-    {%- if word != blank and word != nil -%}
-        {%- assign first_char = word | slice: 0, 1 -%}
-        {%- assign first_char_upper = first_char | upcase -%}
-        {%- if first_char == first_char_upper -%}
-        {%- comment -%} Word already starts with uppercase, keep it as is {%- endcomment -%}
-        {%- assign capitalized_words = capitalized_words | push: word -%}
-        {%- else -%}
-        {%- comment -%} Word doesn't start with uppercase, capitalize it {%- endcomment -%}
-        {%- assign rest_chars = word | slice: 1, 100 -%}
-        {%- assign capitalized_word = first_char_upper | append: rest_chars -%}
-        {%- assign capitalized_words = capitalized_words | push: capitalized_word -%}
+      {%- comment -%} Find all variants of this tag and pick the alphabetically first one {%- endcomment -%}
+      {%- assign variants = "" | split: "" -%}
+      {%- for candidate in all_tags_raw -%}
+        {%- assign candidate_normalized = candidate | replace: '_', ' ' | downcase -%}
+        {%- if candidate_normalized == normalized_key -%}
+          {%- assign variants = variants | push: candidate -%}
         {%- endif -%}
+      {%- endfor -%}
+
+      {%- assign sorted_variants = variants | sort -%}
+      {%- assign best_variant = sorted_variants[0] -%}
+
+      {%- comment -%} Clean up the best variant: replace underscores with spaces, capitalize each word {%- endcomment -%}
+      {%- assign words_with_spaces = best_variant | replace: '_', ' ' -%}
+      {%- assign words_array = words_with_spaces | split: ' ' -%}
+      {%- assign capitalized_words = "" | split: "" -%}
+
+      {%- for word in words_array -%}
+        {%- if word != blank and word != nil -%}
+          {%- assign first_char = word | slice: 0, 1 -%}
+          {%- assign first_char_upper = first_char | upcase -%}
+          {%- if first_char == first_char_upper -%}
+            {%- assign capitalized_words = capitalized_words | push: word -%}
+          {%- else -%}
+            {%- assign rest_chars = word | slice: 1, 100 -%}
+            {%- assign capitalized_word = first_char_upper | append: rest_chars -%}
+            {%- assign capitalized_words = capitalized_words | push: capitalized_word -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- assign display_tag = capitalized_words | join: ' ' -%}
+      {%- assign tag_groups = tag_groups | push: display_tag -%}
+    {%- else -%}
+      {%- comment -%} Handle single occurrence tags {%- endcomment -%}
+      {%- assign processed_normalized = processed_normalized | push: normalized_key -%}
+
+      {%- comment -%} Find the single variant {%- endcomment -%}
+      {%- assign single_variant = "" -%}
+      {%- for candidate in all_tags_raw -%}
+        {%- assign candidate_normalized = candidate | replace: '_', ' ' | downcase -%}
+        {%- if candidate_normalized == normalized_key -%}
+          {%- assign single_variant = candidate -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%} Clean up the single variant {%- endcomment -%}
+      {%- assign words_with_spaces = single_variant | replace: '_', ' ' -%}
+      {%- assign words_array = words_with_spaces | split: ' ' -%}
+      {%- assign capitalized_words = "" | split: "" -%}
+
+      {%- for word in words_array -%}
+        {%- if word != blank and word != nil -%}
+          {%- assign first_char = word | slice: 0, 1 -%}
+          {%- assign first_char_upper = first_char | upcase -%}
+          {%- if first_char == first_char_upper -%}
+            {%- assign capitalized_words = capitalized_words | push: word -%}
+          {%- else -%}
+            {%- assign rest_chars = word | slice: 1, 100 -%}
+            {%- assign capitalized_word = first_char_upper | append: rest_chars -%}
+            {%- assign capitalized_words = capitalized_words | push: capitalized_word -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- assign display_tag = capitalized_words | join: ' ' -%}
+      {%- assign single_tag_groups = single_tag_groups | push: display_tag -%}
     {%- endif -%}
-    {%- endfor -%}
-    
-    {%- assign display_tag = capitalized_words | join: ' ' -%}
-    
-    {%- assign tag_groups = tag_groups | push: display_tag -%}
-{%- endunless -%}
+  {%- endunless -%}
 {%- endfor -%}
 
-{%- comment -%} Sort the final tag list {%- endcomment -%}
+{%- comment -%} Sort the final tag lists {%- endcomment -%}
 {%- assign sorted_tags = tag_groups | sort -%}
+{%- assign sorted_single_tags = single_tag_groups | sort -%}
+
+{%- comment -%} Combine and sort all tags alphabetically {%- endcomment -%}
+{%- assign all_content_tags = sorted_tags | concat: sorted_single_tags | sort -%}
 
 {%- comment -%} Prepend the date filter tags {%- endcomment -%}
-{%- assign sorted_tags = '' | split: '' | push: 'Today' | push: 'Yesterday' | push: 'This Week' | push: 'Last Week' | push: 'This Month' | push: 'Last Month' | push: 'This Year' | push: 'Last Year' | concat: sorted_tags -%}
+{%- assign sorted_tags = '' | split: '' | push: 'Last 3 days' | push: 'Last 7 days' | push: 'Last 30 days' | push: 'Last 365 days' | push: 'All time' | concat: all_content_tags -%}
 
 <div id="tag-filters" style="margin-bottom: 15px;">
   <button class="tag-filter-btn clear-btn" onclick="clearFilters()">Clear All</button>
   {%- for tag in sorted_tags -%}
     {%- assign tag_lc = tag | downcase | strip -%}
     {%- assign is_date = false -%}
-    {%- if tag_lc == 'today' or tag_lc == 'yesterday' or tag_lc == 'this week' or tag_lc == 'last week' or tag_lc == 'this month' or tag_lc == 'last month' or tag_lc == 'this year' or tag_lc == 'last year' -%}
+    {%- assign is_single = false -%}
+    {%- if tag_lc == 'last 3 days' or tag_lc == 'last 7 days' or tag_lc == 'last 30 days' or tag_lc == 'last 365 days' or tag_lc == 'all time' -%}
       {%- assign is_date = true -%}
     {%- endif -%}
-    <button class="tag-filter-btn{% if is_date %} date-filter-btn{% endif %}" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
+    {%- if sorted_single_tags contains tag -%}
+      {%- assign is_single = true -%}
+    {%- endif -%}
+    <button class="tag-filter-btn{% if is_date %} date-filter-btn{% endif %}{% if is_single %} single-tag-btn{% endif %}" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
   {%- endfor -%}
+  {%- if sorted_single_tags.size > 0 -%}
+    <button class="tag-filter-btn toggle-btn" onclick="toggleSingleTags()" id="toggle-single-tags">▶ Show</button>
+  {%- endif -%}
 </div>
 
 <script>
 let activeFilters = new Set();
+let singleTagsVisible = false;
 
 // Initialize from URL parameters
 function initializeFilters() {
@@ -92,7 +153,41 @@ const filters = urlParams.get('filters');
 if (filters) {
     activeFilters = new Set(filters.split(',').filter(f => f.trim()));
 }
+const showSingle = urlParams.get('showSingle');
+if (showSingle === 'true') {
+    singleTagsVisible = true;
+}
+initializeSingleTagsVisibility();
 updateDisplay();
+}
+
+// Initialize single tags visibility
+function initializeSingleTagsVisibility() {
+const singleTagButtons = document.querySelectorAll('.single-tag-btn');
+singleTagButtons.forEach(function(btn) {
+    btn.style.display = singleTagsVisible ? '' : 'none';
+});
+updateToggleButton();
+}
+
+// Toggle single tags visibility
+function toggleSingleTags() {
+singleTagsVisible = !singleTagsVisible;
+const singleTagButtons = document.querySelectorAll('.single-tag-btn');
+singleTagButtons.forEach(function(btn) {
+    btn.style.display = singleTagsVisible ? '' : 'none';
+});
+updateToggleButton();
+updateURL();
+}
+
+// Update toggle button text and state
+function updateToggleButton() {
+const toggleBtn = document.getElementById('toggle-single-tags');
+if (toggleBtn) {
+    toggleBtn.textContent = singleTagsVisible ? 'Less' : 'More';
+    toggleBtn.classList.toggle('active', singleTagsVisible);
+}
 }
 
 // Update URL with current filters
@@ -103,12 +198,17 @@ if (activeFilters.size > 0) {
 } else {
     url.searchParams.delete('filters');
 }
+if (singleTagsVisible) {
+    url.searchParams.set('showSingle', 'true');
+} else {
+    url.searchParams.delete('showSingle');
+}
 window.history.replaceState({}, '', url);
 }
 
 // Toggle a filter on/off
 function toggleFilter(tag) {
-const dateFilters = ['today', 'yesterday', 'this week', 'last week', 'this month', 'last month', 'this year', 'last year'];
+const dateFilters = ['last 3 days', 'last 7 days', 'last 30 days', 'last 365 days', 'all time'];
 const isDateFilter = dateFilters.includes(tag);
 
 if (isDateFilter) {
@@ -150,23 +250,51 @@ function wordMatches(tag, filter) {
   return regex.test(tag);
 }
 
+// Check if a post falls within a date range
+function isWithinDateRange(postDate, daysBack) {
+  const now = new Date();
+  const cutoffDate = new Date(now.getTime() - (daysBack * 24 * 60 * 60 * 1000));
+  const postDateObj = new Date(postDate);
+  return postDateObj >= cutoffDate;
+}
+
 // Update post visibility and available tags
 function updateDisplay() {
 const posts = document.querySelectorAll('.post-item');
 const tagButtons = document.querySelectorAll('.tag-filter-btn:not(.clear-btn)');
 const availableTags = new Set();
+const dateFilters = ['last 3 days', 'last 7 days', 'last 30 days', 'last 365 days', 'all time'];
+
+// Check if any date filter is active
+const activeDateFilter = Array.from(activeFilters).find(filter => dateFilters.includes(filter));
 
 // Filter posts and collect available tags from visible posts
 posts.forEach(function(post) {
     const postTagsRaw = (post.getAttribute('data-tags') || '').split(',').filter(t => t.trim());
     const postTagsNormalized = postTagsRaw.map(normalizeTag);
+    const postDate = post.getAttribute('data-date');
 
-    // Check if post should be visible based on active filters
-    const isVisible = activeFilters.size === 0 ||
-      Array.from(activeFilters).every(filter => 
+    // Check tag filters
+    const tagFiltersActive = Array.from(activeFilters).filter(filter => !dateFilters.includes(filter));
+    const passesTagFilter = tagFiltersActive.length === 0 ||
+      tagFiltersActive.every(filter => 
         postTagsNormalized.some(tag => wordMatches(tag, filter))
       );
 
+    // Check date filter
+    let passesDateFilter = true;
+    if (activeDateFilter && activeDateFilter !== 'all time') {
+      const daysMap = {
+        'last 3 days': 3,
+        'last 7 days': 7,
+        'last 30 days': 30,
+        'last 365 days': 365
+      };
+      const daysBack = daysMap[activeDateFilter];
+      passesDateFilter = isWithinDateRange(postDate, daysBack);
+    }
+
+    const isVisible = passesTagFilter && passesDateFilter;
     post.style.display = isVisible ? '' : 'none';
 
     // If post is visible, add its tags to available tags
@@ -179,8 +307,12 @@ posts.forEach(function(post) {
   tagButtons.forEach(function(btn) {
     const tag = btn.getAttribute('data-tag');
     const isActive = activeFilters.has(tag);
-    const dateFilters = ['today', 'yesterday', 'this week', 'last week', 'this month', 'last month', 'this year', 'last year'];
     const isDateFilter = dateFilters.includes(tag);
+    const isSingleTag = btn.classList.contains('single-tag-btn');
+    const isToggleBtn = btn.classList.contains('toggle-btn');
+    
+    // Skip toggle button in this loop
+    if (isToggleBtn) return;
     
     // Date filters are always available, tag filters depend on visible posts
     const isAvailable = isDateFilter || 

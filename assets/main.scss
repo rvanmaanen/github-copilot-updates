@@ -383,6 +383,36 @@ html {
     background: #b71c1c;
 }
 
+.tag-filter-btn.toggle-btn {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+.tag-filter-btn.toggle-btn:hover {
+    background: #218838;
+    border-color: #218838;
+}
+
+.tag-filter-btn.toggle-btn.active {
+    background: #6c757d;
+    color: white;
+    border-color: #6c757d;
+}
+
+.tag-filter-btn.single-tag-btn.active {
+    background: #9d72d9;
+    color: white;
+    border-color: #9d72d9;
+    opacity: 1;
+    border-style: solid;
+}
+
+.tag-filter-btn.single-tag-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .date-filter-btn {
     background: rgba(224, 202, 255, 0.9)
 }
