@@ -262,37 +262,115 @@ html {
     border: 1px solid #bd93f9;
     border-radius: 12px;
     text-decoration: none;
-    color: #e6e8eb !important; // Always Copilot link blue
+    color: #e6e8eb !important; // Always white text
     transition: all 0.3s ease;
     text-align: center;
     backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(189, 147, 249, 0.08);
+
+    &:hover {
+        transform: scale(1.05);
+        background: rgba(31, 111, 235, 0.18); // Slightly deeper Copilot blue
+        box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
+        text-decoration: none !important;
+        color: #e6e8eb !important; // Keep white text on hover
+    }
 }
 
-.nav-square *,
-.nav-square a,
-.nav-square a:visited,
-.nav-square a:hover,
-.nav-square a:focus {
-    color: #e6e8eb !important;
-}
+// Home page specific styling for nav-squares with background images
+.bottom-navigation-home .nav-square {
+    // Dynamic background image styling
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(0px);
 
-.nav-square:hover {
-    transform: scale(1.05);
-    background: rgba(31, 111, 235, 0.18); // Slightly deeper Copilot blue
-    box-shadow: 0 8px 25px rgba(31, 111, 235, 0.18);
-    text-decoration: none;
-    color: inherit;
+    // Add a subtle overlay to ensure text readability
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(26, 26, 46, 0.7);
+        backdrop-filter: blur(1px);
+        z-index: 1;
+    }
+
+    // Ensure text content is above the overlay
+    .nav-content {
+        position: relative;
+        z-index: 2;
+        background: rgba(26, 26, 46, 0.3);
+        padding: 10px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(189, 147, 249, 0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        color: #e6e8eb !important; // Ensure white text
+        
+        .nav-title,
+        .nav-desc {
+            color: #e6e8eb !important; // Ensure white text for title and description
+        }
+    }
+
+    // Responsive background image sizing
+    @media (max-width: 768px) {
+        background-size: cover;
+        background-position: center top;
+        min-height: 140px;
+    }
+
+    @media (max-width: 480px) {
+        background-size: cover;
+        background-position: center center;
+        min-height: 120px;
+    }
+
+    // Hover effect with background scaling
+    &:hover {
+        &::before {
+            background: rgba(26, 26, 46, 0.2); // Much lighter overlay to let image shine through
+        }
+        
+        .nav-content {
+            background: rgba(26, 26, 46, 0.85); // Make content background more opaque on hover
+            border-color: rgba(189, 147, 249, 0.6); // Brighter border
+            color: #e6e8eb !important; // Keep white text on hover
+            
+            .nav-title,
+            .nav-desc {
+                color: #e6e8eb !important; // Keep white text for title and description on hover
+            }
+        }
+
+        // Subtle zoom effect on background image
+        background-size: 100%;
+        transition: all 0.3s ease;
+        
+        // Prevent underline on hover
+        text-decoration: none !important;
+    }
 }
 
 .nav-title {
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 8px;
+    color: #e6e8eb !important; // Ensure white text everywhere
 }
 
 .nav-desc {
     font-size: 14px;
     line-height: 1.4;
+    color: #e6e8eb !important; // Ensure white text everywhere
 }
 
 /* Responsive adjustments */
@@ -306,11 +384,20 @@ html {
         min-height: 140px;
         padding: 20px 15px;
     }
+    
+    .bottom-navigation-home .nav-square {
+        min-height: 140px;
+        padding: 20px 15px;
+    }
 }
 
 @media (max-width: 480px) {
     .nav-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .bottom-navigation-home .nav-square {
+        min-height: 120px;
     }
 }
 
