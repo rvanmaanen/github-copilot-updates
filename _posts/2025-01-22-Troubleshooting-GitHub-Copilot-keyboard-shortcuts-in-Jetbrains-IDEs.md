@@ -12,10 +12,6 @@ feed_url: "https://jessehouwing.net/rss/"
 date: 2025-01-22T19:39:29Z
 ---
 
-Over the past months I've delivered 100s of GitHub Copilot workshops. Ranging from 2 hour introduction talks, where I quickly walk through the main features of the product, up to day-long workshops with interactive hands-on.
-
-For most people it's pretty easy to get started. In Visual Studio Code you install a plugin, in Visual Studio 2022 it's installed by default, but in other IDEs it can be a bit trickier to get GitHub Copilot to work.
-
-In my experience the different Jetbrains IDEs are among the trickiest. This includes IntelliJ, Rider, Pycharm, Webstorm, RubyMine and more. So far I've found two main problems that break GitHub Copilot.
+Jesse Houwing explains that many developers, including himself, have faced issues with GitHub Copilot keyboard shortcuts in Jetbrains IDEs like IntelliJ, Rider, and PyCharm. <!--excerpt_end--> The two main problems are: (1) Copilot’s default shortcuts often conflict with existing keymaps (such as Visual Studio 2022), requiring users to manually resolve conflicts by reassigning or removing other actions; and (2) conflicts between Copilot and Jetbrains’ own “Full line completion” plugin, especially when using remote IDEs. Jesse recommends ensuring both plugins are up to date and, if `tab` completion fails, disabling the Full line completion plugin both locally and remotely. This helps Copilot’s shortcuts work as intended.
 
 This post appeared first on The Jesse Houwing. [Read the entire article here](https://jessehouwing.net/troubleshooting-github-copilot-keyboard-shortcuts-in-jetbrains-ides/)
