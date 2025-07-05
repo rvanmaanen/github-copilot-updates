@@ -33,8 +33,9 @@ window.navData = {
     var mainNavLinks = document.querySelectorAll('.site-nav .page-link');
     mainNavLinks.forEach(function(link) {
       link.classList.remove('active');
-      if ((entry === 'ai' && link.href.includes('/ai')) || 
-          (entry === 'github-copilot' && link.href.includes('/github-copilot'))) {
+      var linkHref = link.getAttribute('href');
+      if ((entry === 'ai' && linkHref.includes('/ai')) || 
+          (entry === 'github-copilot' && linkHref.includes('/github-copilot'))) {
         link.classList.add('active');
       }
     });
@@ -67,24 +68,48 @@ window.navData = {
       var linkPath = link.url;
       var isActive = false;
       
+      // Detect base path dynamically by looking at script tag or link hrefs
+      var basePath = '';
+      var scriptSrc = document.querySelector('script[src*="/assets/"]');
+      if (scriptSrc) {
+        var src = scriptSrc.getAttribute('src');
+        var assetsIndex = src.indexOf('/assets/');
+        if (assetsIndex > 0) {
+          basePath = src.substring(0, assetsIndex);
+        }
+      }
+      
+      // If no base path detected from assets, try to detect from current path structure
+      if (!basePath && currentPath.includes('/github-copilot-updates/')) {
+        basePath = '/github-copilot-updates';
+      }
+      
+      // Extract the relative path from the current URL (removing base path if present)
+      var relativePath = basePath && currentPath.indexOf(basePath) === 0 ? currentPath.replace(basePath, '') : currentPath;
+      
+      // Ensure linkPath is relative (remove base path if present)
+      if (basePath && linkPath.indexOf(basePath) === 0) {
+        linkPath = linkPath.replace(basePath, '');
+      }
+      
       // Direct URL match
-      if (currentPath === linkPath) {
+      if (relativePath === linkPath) {
         isActive = true;
       }
       // Check if we're on a news page and this is the news link
-      else if (currentPath.startsWith('/news/') && linkPath.includes('/news.html')) {
+      else if (relativePath.startsWith('/news/') && linkPath.includes('/news.html')) {
         isActive = true;
       }
       // Check if we're on a blog page and this is the blog link
-      else if (currentPath.startsWith('/blogs/') && linkPath.includes('/blogs.html')) {
+      else if (relativePath.startsWith('/blogs/') && linkPath.includes('/blogs.html')) {
         isActive = true;
       }
       // Check if we're on a video page and this is the video link
-      else if (currentPath.startsWith('/videos/') && linkPath.includes('/videos.html')) {
+      else if (relativePath.startsWith('/videos/') && linkPath.includes('/videos.html')) {
         isActive = true;
       }
       // Check if current path contains the link path (for subsections)
-      else if (linkPath !== '' && currentPath.indexOf(linkPath.replace('.html', '')) === 0) {
+      else if (linkPath !== '' && relativePath.indexOf(linkPath.replace('.html', '')) === 0) {
         isActive = true;
       }
       
