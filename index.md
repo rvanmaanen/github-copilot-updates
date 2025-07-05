@@ -10,11 +10,11 @@ Welcome to the Xebia Microsoft Services Tech Hub. Here you will find resources, 
 
 <div class="bottom-navigation">
   <div class="nav-grid">
-      <a href="/ai" class="nav-square">
+      <a href="{{ site.baseurl }}/ai" class="nav-square">
         <span class="nav-title">Microsoft AI</span>
         <span class="nav-desc">Everything on AI in the Microsoft space</span>
       </a>
-      <a href="/github-copilot" class="nav-square">
+      <a href="{{ site.baseurl }}/github-copilot" class="nav-square">
         <span class="nav-title">GitHub Copilot</span>
         <span class="nav-desc">Full focus on GitHub Copilot</span>
       </a>
