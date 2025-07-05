@@ -69,23 +69,18 @@
   {%- endunless -%}
 {%- endfor -%}
 
-{%- comment -%} Separate tags by occurrence count {%- endcomment -%}
-{%- assign multiple_tags = "" | split: "" -%}
-{%- assign single_tags = "" | split: "" -%}
+{%- comment -%} Create tag info objects with occurrence counts {%- endcomment -%}
+{%- assign tag_objects = "" | split: "" -%}
 {%- for tag_info in final_tags -%}
   {%- assign parts = tag_info | split: '|' -%}
   {%- assign tag = parts[0] -%}
   {%- assign count = parts[1] | plus: 0 -%}
-  {%- if count > 1 -%}
-    {%- assign multiple_tags = multiple_tags | push: tag -%}
-  {%- else -%}
-    {%- assign single_tags = single_tags | push: tag -%}
-  {%- endif -%}
+  {%- assign tag_with_count = tag | append: '|' | append: count -%}
+  {%- assign tag_objects = tag_objects | push: tag_with_count -%}
 {%- endfor -%}
 
-{%- comment -%} Combine and sort all tags {%- endcomment -%}
-{%- assign sorted_multiple_tags = multiple_tags | sort -%}
-{%- assign sorted_single_tags = single_tags | sort -%}
+{%- comment -%} Sort all tags alphabetically {%- endcomment -%}
+{%- assign sorted_tag_objects = tag_objects | sort -%}
 
 {%- comment -%} Add date filter tags {%- endcomment -%}
 {%- assign date_filters = 'Last 3 days,Last 7 days,Last 30 days,Last 365 days,All time' | split: ',' -%}
@@ -98,17 +93,30 @@
     <button class="tag-filter-btn date-filter-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
   {%- endfor -%}
   
-  {%- comment -%} Multiple-occurrence tag buttons (always visible) {%- endcomment -%}
-  {%- for tag in sorted_multiple_tags -%}
-    <button class="tag-filter-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
+  {%- comment -%} All tag buttons (multiple and single occurrence, sorted alphabetically) {%- endcomment -%}
+  {%- for tag_object in sorted_tag_objects -%}
+    {%- assign parts = tag_object | split: '|' -%}
+    {%- assign tag = parts[0] -%}
+    {%- assign count = parts[1] | plus: 0 -%}
+    {%- if count > 1 -%}
+      <button class="tag-filter-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
+    {%- else -%}
+      <button class="tag-filter-btn single-tag-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
+    {%- endif -%}
   {%- endfor -%}
   
-  {%- comment -%} Single-occurrence tag buttons (hidden by default) {%- endcomment -%}
-  {%- for tag in sorted_single_tags -%}
-    <button class="tag-filter-btn single-tag-btn" data-tag="{{ tag | downcase | escape }}" onclick="toggleFilter('{{ tag | downcase | escape }}')">{{ tag | escape }}</button>
+  {%- comment -%} Check if we have any single-occurrence tags to show the More button {%- endcomment -%}
+  {%- assign has_single_tags = false -%}
+  {%- for tag_object in sorted_tag_objects -%}
+    {%- assign parts = tag_object | split: '|' -%}
+    {%- assign count = parts[1] | plus: 0 -%}
+    {%- if count == 1 -%}
+      {%- assign has_single_tags = true -%}
+      {%- break -%}
+    {%- endif -%}
   {%- endfor -%}
   
-  {%- if sorted_single_tags.size > 0 -%}
+  {%- if has_single_tags -%}
     <button class="tag-filter-btn toggle-btn" onclick="toggleSingleTags()" id="toggle-single-tags">More</button>
   {%- endif -%}
 </div>
