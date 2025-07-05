@@ -1,3 +1,17 @@
+{%- comment -%}
+  Determine which section we're in based on URL
+{%- endcomment -%}
+{%- assign current_section = "" -%}
+
+{%- comment -%}
+  Check URL path first
+{%- endcomment -%}
+{%- if page.url contains "/ai" -%}
+  {%- assign current_section = "ai" -%}
+{%- elsif page.url contains "/github-copilot" -%}
+  {%- assign current_section = "github-copilot" -%}
+{%- endif -%}
+
 <header class="site-header" role="banner">
 
   <div class="wrapper">
@@ -36,33 +50,17 @@
       </label>
 
       <div class="trigger">
-        <a class="page-link" href="/ai">Microsoft AI Hub</a>
-        <a class="page-link" href="/github-copilot">GitHub Copilot Hub</a>
+        <a class="page-link{% if page.url == '/' or page.url == '/index.html' %} active{% endif %}" href="/">Home</a>
+        <a class="page-link{% if current_section == 'ai' %} active{% endif %}" href="/ai">Microsoft AI Hub</a>
+        <a class="page-link{% if current_section == 'github-copilot' %} active{% endif %}" href="/github-copilot">GitHub Copilot Hub</a>
         <a class="page-link-xebia" href="https://www.xebia.com/contact" target="_blank">Contact</a>
       </div>
     </nav>
   </div>
-
-
 </header>
 
 {%- comment -%}
-  Determine which section we're in based on URL
-{%- endcomment -%}
-{%- assign current_section = "" -%}
-{%- assign query_string = page.url | split: '?' | last -%}
-{%- if page.url contains "/ai" -%}
-  {%- assign current_section = "ai" -%}
-{%- elsif page.url contains "/github-copilot" -%}
-  {%- assign current_section = "github-copilot" -%}
-{%- elsif query_string contains "entry=ai" -%}
-  {%- assign current_section = "ai" -%}
-{%- elsif query_string contains "entry=github-copilot" -%}
-  {%- assign current_section = "github-copilot" -%}
-{%- endif -%}
-
-{%- comment -%}
-  Get the appropriate pages based on current section
+  Get the appropriate section pages based on current section
 {%- endcomment -%}
 {%- assign section_pages = "" -%}
 {%- if current_section == "ai" -%}
@@ -90,3 +88,10 @@
   </nav>
 </div>
 {%- endif -%}
+
+{%- comment -%}
+  Include JavaScript for dynamic subnav handling
+{%- endcomment -%}
+<script>
+{% include subnav.js %}
+</script>
