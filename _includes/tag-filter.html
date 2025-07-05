@@ -51,9 +51,9 @@
     {%- assign words = best_variant | replace: '_', ' ' | split: ' ' -%}
     {%- assign capitalized_words = "" | split: "" -%}
     {%- for word in words -%}
-      {%- assign first_char = word | slice: 0, 1 -%}
-      {%- if first_char == first_char | upcase -%}
-        {%- comment -%} Word already starts with uppercase, keep as is {%- endcomment -%}
+      {%- assign word_upper = word | upcase -%}
+      {%- if word == word_upper -%}
+        {%- comment -%} Word is all uppercase (like "AI"), keep as is {%- endcomment -%}
         {%- assign capitalized_words = capitalized_words | push: word -%}
       {%- else -%}
         {%- comment -%} Capitalize first letter only {%- endcomment -%}
