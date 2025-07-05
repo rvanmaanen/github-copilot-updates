@@ -1,6 +1,8 @@
 name: RSS Feed Monitor
 
 on:
+  schedule:
+    - cron: '0 3 * * *' # Runs daily at 3 AM UTC
   workflow_dispatch:
     # Allow manual trigger
 
@@ -9,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      contents: read
+      contents: write
     
     steps:
       - name: Checkout repository
@@ -20,4 +22,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./.github/scripts/monitor-rss.ps1 -GitHubToken $env:GITHUB_TOKEN -Repository $env:GITHUB_REPOSITORY
+          ./.github/scripts/monitor-rss.ps1
+      
+      - name: Commit and push new posts and news
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add _posts/ _news/
+          if ! git diff --cached --quiet; then
+            git commit -m "New posts and news based on RSS feeds"
+            git push
+          else
+            echo "No changes to commit"
+          fi

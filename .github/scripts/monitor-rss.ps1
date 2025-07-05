@@ -21,14 +21,22 @@ function Invoke-ChatCompletion {
         "messages" = @(
             @{
                 "role"    = "system"
-                "content" = "You are an assistant for a website that aggregates articles about software development for a news website. You will receive a description of an article and you need to right a short summary of that description. Make sure to include the author's name in that summary. The summary should not be more than 200 characters long."
+                "content" = "You are an assistant for a news website that aggregates articles about software development. You will receive a JSON formatted message containing an article and author. From that article,you need to create a JSON response containing 5 fields: description, categories, tags and content. 
+                
+                The description should be a brief overview of the article, highlighting the key points and main topics discussed. The description should be concise and informative, not exceeding 200 characters.
+
+                The content should be an extensive summary of the article. It should be well structured, organized and in markdown format. In the first 200 characters include the author's name as part of the introduction. After that introduction put the text <!--excerpt_end-->. Make sure there is a space and then continue with the rest of the content.
+
+                The categories should either be 'AI' or 'Copilot' or both or neither depending on the content of the article and should be an array of strings. If it's neither, the array should be empty. Only include 'AI' if the article directly is about Azure AI Service, Azure AI Foundry, Semantic Kernel or other technical AI software development concepts. This means Infrastructure as Code or Azure by itself is not enough. Only include 'Copilot' if the article discusses GitHub Copilot. If both are relevant, include both in the array. If you include Copilot, always include AI as well, but not the other way around. If you are not sure, leave the array empty.
+
+                The tags should be an array of relevant keywords based on the contents of the article. The tags should not include generic terms like 'news' or 'update'."
             },
             @{
                 "role"    = "user"
                 "content" = $Description
             }
         )
-    } | ConvertTo-Json -Depth 10
+    } | ConvertTo-Json -Depth 10 -Compress
 
     $response = Invoke-RestMethod -Uri "https://models.github.ai/inference/chat/completions" `
         -Method Post `
@@ -187,7 +195,11 @@ function Invoke-RssFeedsProcessor {
         [Parameter(Mandatory = $false)]
         [switch]$Recreate,
         [Parameter(Mandatory = $true)]
-        [string]$OutputDir
+        [string]$OutputDir,
+        [Parameter(Mandatory = $false)]
+        [int]$MaxItemsPerFeed = 50,
+        [Parameter(Mandatory = $false)]
+        [int]$DaysToLookBack = 365
     )
 
     Write-Host "Processing feed: $($feedConfig.name)"
@@ -405,7 +417,6 @@ function Invoke-RssFeedsProcessor {
         }
         
         if (-not $author) {
-            Write-Host "No author found for RSS item '$title', using feedname '$($feedConfig.name)' as fallback"
             $author = $feedConfig.name
         }
 
@@ -423,25 +434,6 @@ function Invoke-RssFeedsProcessor {
                
                 $tags += $catValue.Trim()
             }
-
-            if ($childNode.LocalName -eq 'tag' -or $childNode.LocalName -eq 'tags') {
-                $tagValue = Get-XmlElementValue $childNode
-                if ($tagValue) {
-                    $tags += $tagValue.Trim()
-                }
-            }
-        }
-        
-        $categories = @()
-        if ($description -match '\bAI\b' -or $description -match '\bArtificial Intelligence\b' -or $description -match '\Semantic Kernel\b' -or $description -match '\bFoundry\b') {
-            $categories += 'AI'
-        }
-        if ($description -match '\bCopilot\b') {
-            $categories += 'Copilot'
-        }
-        if ($categories.Count -eq 0) {
-            Write-Host "No categories found, skipping item: $title"
-            continue;
         }
 
         $normalizedItem = [PSCustomObject]@{
@@ -450,18 +442,17 @@ function Invoke-RssFeedsProcessor {
             pubDate     = $pubDate
             description = $description
             author      = $author
-            tags        = $tags -join ','
-            categories  = $categories -join ','
+            tags        = $tags
         }
             
         $items += $normalizedItem
     }
 
     $latestItems = @($items | Where-Object { 
-            (((Get-Date) - $_.pubDate).Days -le 365)
-        })
+            (((Get-Date) - $_.pubDate).Days -le $DaysToLookBack)
+        } | Sort-Object pubDate -Descending | Select-Object -First $MaxItemsPerFeed)
 
-    Write-Host "Found $($latestItems.Count) possibly new items in feed: $($feedConfig.name)"
+    Write-Host "Found $($latestItems.Count) possibly new items in feed: $($feedConfig.name) (limited to $MaxItemsPerFeed items within $DaysToLookBack days)"
                 
     foreach ($item in $latestItems) {
         $filename = "$($item.pubDate.ToString('yyyy-MM-dd'))-$(Get-SanitizedFilename $item.title).md"
@@ -478,42 +469,90 @@ function Invoke-RssFeedsProcessor {
             Write-Host "Template file not found: $templatePath"
             continue
         }
-                    
-        $descriptionSummary = (Get-FrontMatterValue $description) -replace ' The post .*? first on .*', ''
-        if ($descriptionSummary.Length -gt 100) {
-            $descriptionSummary = $descriptionSummary.Substring(0, [Math]::Min(100, $descriptionSummary.Length)) + '...' # Truncate to 100 characters
-        }
-        $descriptionSummary = $descriptionSummary.Trim()
-                
-        # $descriptionSummary = Invoke-ChatCompletion `
-        #     -Token $Token `
-        #     -Model $Model `
-        #     -Description ($description + "`n`nAuthor: $author")
 
-        #remove html tags from content
-        $content = $item.description -replace '<[^>]+>', ''
-        $content = $content -replace '\s+Read the full article', '.<!--excerpt_end-->'
-        $content = $content -replace '(.*)\s+The post .+? appeared first on .*', '$1<!--excerpt_end-->'
-        $content = $content -replace '\[…\]', '[...]'
-        $content = $content -replace '\s+', ' '
+        $article = $item.description
+        $article = $article -replace '<[^>]+>', ''
+        $article = $article -replace '\s+Read the full article', '.'
+        $article = $article -replace '(.*)\s+The post .+? appeared first on .*', '$1'
+        $article = $article -replace '\s+', ' '
+
+        $body = @{
+            content = $article
+            author  = $item.author
+        } | ConvertTo-Json -Depth 10 -Compress
+
+        $response = (Invoke-ChatCompletion `
+                -Token $Token `
+                -Model $Model `
+                -Description $body) | ConvertFrom-Json
+
+        $tags = $item.tags
+        if ($response.tags -and $response.tags.Count -gt 0) {
+            $tags += $response.tags
+        }
+
+        $categories = @()
+        if ($description -match '\bAI\b' `
+                -or $description -match '\bArtificial Intelligence\b' `
+                -or $description -match '\Semantic Kernel\b' `
+                -or $description -match '\bFoundry\b' `
+                -or $tags -match '\bAI\b' `
+                -or $tags -match '\bArtificial Intelligence\b' `
+                -or $tags -match '\Semantic Kernel\b') {
+            $categories += 'AI'
+        }
+        if ($description -match '\bCopilot\b' `
+                -or $tags -match '\bCopilot\b') {
+            $categories += 'Copilot'
+            $categories += 'AI'
+        }
+        if ($response.categories -and $response.categories.Count -gt 0) {
+            $categories += $response.categories
+        }
+        if ($categories.Count -eq 0) {
+            Write-Host "No categories found, skipping item: $title"
+            continue;
+        }
+
+        $tags += $categories
+        if ($tags -contains 'AI') {
+            $tags += 'Artificial Intelligence'
+        }
+        if ($tags -contains 'Copilot') {
+            $tags += 'GitHub Copilot'
+        }
+        if ($tags -contains 'VS') {
+            $tags += 'Visual Studio'
+        }
+        if ($tags -contains 'VS Code') {
+            $tags += 'Visual Studio Code'
+        }
+        if ($tags -contains 'VSCode') {
+            $tags += 'Visual Studio Code'
+        }
+        $tags = $tags | Where-Object { $_ -notin @('VS', 'VS Code', 'VSCode') }
+
+        #sort categories and tags
+        $categories = $categories | Sort-Object -Unique
+        $tags = $tags | Sort-Object -Unique
 
         # Perform string replacements
         $markdownContent = Get-Content $templatePath -Raw
         $markdownContent = $markdownContent -replace '{{TITLE}}', (Get-FrontMatterValue $item.title)
         $markdownContent = $markdownContent -replace '{{AUTHOR}}', (Get-FrontMatterValue $item.author)
-        $markdownContent = $markdownContent -replace '{{DESCRIPTION}}', (Get-FrontMatterValue $descriptionSummary)
+        $markdownContent = $markdownContent -replace '{{DESCRIPTION}}', (Get-FrontMatterValue $response.description)
         $markdownContent = $markdownContent -replace '{{CANONICAL_URL}}', $item.link
-        $markdownContent = $markdownContent -replace '{{TAGS}}', (Get-FrontMatterValue $item.tags)
+        $markdownContent = $markdownContent -replace '{{TAGS}}', (Get-FrontMatterValue ($tags -join ','))
         $markdownContent = $markdownContent -replace '{{FEEDNAME}}', (Get-FrontMatterValue $feedConfig.name)
         $markdownContent = $markdownContent -replace '{{FEEDURL}}', $feedConfig.url
-        $markdownContent = $markdownContent -replace '{{CONTENT}}', $content
-        $markdownContent = $markdownContent -replace '{{DATE}}', (Get-FrontMatterValue $item.pubDate)
-        $markdownContent = $markdownContent -replace '{{CATEGORIES}}', (Get-FrontMatterValue $item.categories)
+        $markdownContent = $markdownContent -replace '{{CONTENT}}', $response.content
+        $markdownContent = $markdownContent -replace '{{DATE}}', (Get-FrontMatterValue ($item.pubDate.ToString("yyyy-MM-ddTHH:mm:ssZ")))
+        $markdownContent = $markdownContent -replace '{{CATEGORIES}}', (Get-FrontMatterValue ($categories -join ','))
 
         # Create the file
         Set-Content -Path $filePath -Value $markdownContent -Encoding UTF8 -Force
-        #Write-Host "Created file: $filename for: $($title). Waiting 5 seconds to avoid rate limiting..."
-        #Start-Sleep -Seconds 5
+        Write-Host "Created file: $filename. Waiting 10 seconds to avoid rate limiting..."
+        Start-Sleep -Seconds 10
     }
 }
 
@@ -531,10 +570,12 @@ try {
     foreach ($feedConfig in $feedsConfig) {
         Invoke-RssFeedsProcessor `
             -FeedConfig $feedConfig `
-            -Token $env:GITHUB_AI_TOKEN `
-            -Model "openai/gpt-4.1" `
+            -Token $env:GITHUB_TOKEN `
+            -Model "xai/grok-3" `
             -OutputDir "$PSScriptRoot/../../$($feedConfig.outputDir)" `
-            -Recreate
+            -MaxItemsPerFeed 5 `
+            -DaysToLookBack 999 `
+            -Recreate:$false
     }
 }
 catch {

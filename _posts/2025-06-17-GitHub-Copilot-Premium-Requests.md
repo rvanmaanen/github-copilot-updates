@@ -1,16 +1,45 @@
 ---
 layout: "post"
 title: "GitHub Copilot Premium Requests"
-description: "Tonight, I had the idea of starting a new project to test and demo new area’s and features of ASP.NE..."
+description: "Rob Bos explains GitHub Copilot's new Premium Requests - usage costs, pricing, model multipliers, plan limits, and tools to monitor or avoid overspending."
 author: "Rob Bos"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devopsjournal.io/blog/2025/06/17/Copilot-premium-requests"
-tags: "[]"
-categories: "[AI,Copilot]"
+tags: [AI,AI models,Artificial Intelligence,coding agents,Copilot,cost management,GitHub Copilot,GitHub Copilot Pro,GPT-4,Premium Requests,pricing,usage limits]
+categories: [AI,Copilot]
 feed_name: "Rob Bos"
 feed_url: "https://devopsjournal.io/blog/atom.xml"
+date: 2025-06-17T02:00:00Z
 ---
 
-Some important changes are happening, which means you will need to start paying for the amount of Generative AI you use with GitHub Copilot. This will finally make the end-user think about the monetary cost of executing a request with a Large Language Model, so they realize this stuff is not running for free. In that sense we have been spoiled, so it is time to take up some ownership here for the end-users. This post will give you an overview of what you need to expect and how you can protect yourself from overspending. What is Premium Requests for GitHub Copilot ? Tomorrow the 18th is the date GitHub Copilot Premium Requests will be enforced (see the docs here). This post gives you an overview to know what you need to expect. Copilot Premium Requests are any request that is made to any model that is not the default (currently GPT-4o and GPT-4.1). Some features against a model will cost 1 Premium Request, some will cost more then 1 Premium Request (using GPT-4.5 will be x50!) and some are less expensive (Gemini 2.0 Flash is the cheapest at 0.25x). I previously recorded a video on Premium Requests as well, find it here if you prefer to learn things that way: What is a premium request Here is an overview of the main features that will consume a premium request: Chatting with a non default model: 1 premium request per ‘turn’ (every question and answer is a turn) Every step in the Coding Agent: 1 premium request. The agent can decide to make multiple steps, and will thus consume a premium request for each step. Note: I hope that the agent will also come with a “max requests” setting, so that you can limit the amount of requests it can make in a single conversation and prevent it from overspending. Requesting a Code Review in a Pull Request: 1 premium request Agent Mode in an editor: 1 premium request per user initiated request Copilot Coding Agent: can use multiple premium requests where it sees fit From the docs here, Copilot Spaces and Extensions also consume premium requests, but it is not clear how many requests they consume or for what. I can imagine that a Chat Turn against a Copilot Space will consume a premium request each time, and same for Copilot Extensions. For the latter it is also not clear if that is for both local extensions (like the @Azure extension that runs locally inside of VS Code), or also for the remote extensions that are installed as GitHub Apps in your organization. Free plan If you are on a Free plan, even the base model will consume a premium request if you are using the Chat feature. Paid plans If you are on a paid plan, then you will get a certain amount of premium requests per month. If you go over this amount, you will be charged for the extra requests at {{CONTENT}}.04 per premium request. If that request is against a 50x model, then you will be charged $2.00 for that single request! To view the full overview of the different multipliers, see the documentation. This is the table of the different amount of included premium requests per plan: Plan Premium requests Copilot Chat in IDEs Code completion Copilot Free 50 per month 50 messages per month 2000 completions per month Copilot Pro 300 per month Unlimited with base model Unlimited Copilot Pro+ 1500 per month Unlimited with base model Unlimited Copilot Business 300 per user per month Unlimited with base model Unlimited Copilot Enterprise 1000 per user per month Unlimited with base model Unlimited To protect yourself or your users, you can configure a budget for premium requests in your user/organization settings. The default is {{CONTENT}}.00, but you can set it to any amount you want. If you reach this budget, then all premium requests will be blocked until the next month. This is now finally available inside of the new Coding Agent session panel as well: Finding your own usage info as a User The changes that where made where showing the multipliers to the different models to the users so they can make decisions on which model to use: This is now visible for at least Visual Studio Code, Jetbrains IDE’s, and Visual Studio. These editors also show the setup for your account: If you look closely, you can even see the progress bar in the middle of the screen showing that I have been using some Premium Requests already. Visual Studio shows it in a slightly different way by using the GitHub Copilot icon in the top right corner: To find your own usage information, you can go to your User –> Settings –> Billing and then get an overview like this: Analyzing the GitHub Copilot Premium Requests report in your organization / enterprise Do you need to analyze the GitHub Copilot Premium requests CSV now that they will be enforced? I created a single page application (SPA) with GitHub Spark and GitHub Copilot Coding Agent to display an overview of the Premium Requests CSV that you can currently download (no API yet 😓). Can be hosted on GitHub Pages: GitHub Copilot Premium Requests Usage Analyzer Upload the CSV from the enterprise export (Billing and Licenses –> Usage –> Export dropdown right top) Result can be seen here: See the repo in action here (click on the link on the right side to use your own data): https://github.com/devops-actions/github-copilot-premium-reqs-usage. It’s open source, so feel free to contribute or request features!
+In this article, Rob Bos delves into the recently introduced Premium Requests system for GitHub Copilot, highlighting how the changes will directly impact developers, organizations, and end-users. <!--excerpt_end--> With this enforcement, users will now be charged for their consumption of Generative AI in Copilot beyond the basic quota included in their chosen plan, making transparency about resource use — and its real monetary cost — a central theme.
+
+## What Are Copilot Premium Requests?
+Premium Requests are incurred whenever a user interacts with a non-default LLM model (such as GPT-4o, GPT-4.1, or GPT-4.5) within GitHub Copilot. Different models have different multipliers: a request sent to some advanced models (like GPT-4.5) can cost up to 50x more than a standard one, while others (like Gemini 2.0 Flash) may be much cheaper at 0.25x. Premium Requests are consumed in a variety of scenarios:
+
+- **Conversational interactions:** Each question/answer turn with a non-default model.
+- **Coding Agent steps:** Every step the Copilot Coding Agent takes counts as one request, with multi-step processes consuming even more.
+- **Code reviews, pull requests, and agent mode usage in editors:** Each such feature invocation uses at least one Premium Request.
+
+Extensions and Copilot Spaces also consume Premium Requests, though precise details remain undocumented.
+
+## Pricing and Plan Details
+Copilot plans (Free, Pro, Pro+, Business, Enterprise) differ in the number of monthly included Premium Requests. If the quota is exceeded, extra charges apply (e.g., {{CONTENT}}.04/request). The true cost can spiral quickly when high-multiplier models are used; for instance, a single GPT-4.5 request at 50x multiplier costs $2.00.
+
+Breakdown:
+- Copilot Free: 50/month
+- Copilot Pro: 300/month
+- Copilot Pro+: 1500/month
+- Copilot Business: 300/user/month
+- Copilot Enterprise: 1000/user/month
+
+## Managing Spend and Usage
+Users and organizations can now set a monthly spending cap (default {{CONTENT}}.00) to block Premium Requests upon reaching the limit. Progress tracking is visible within major IDEs (VSCode, JetBrains, Visual Studio) via dedicated UI elements, helping devs monitor consumption in real time.
+
+## Reporting and Analysis Tools
+To assist organizations, Rob Bos introduces a self-hosted, open source SPA (Single Page Application) that visualizes usage from the official GitHub Copilot Premium Requests CSV export. This can be found on GitHub and helps enterprise admins analyze usage patterns and detect overspending risks.
+
+## Summary
+This transition from an all-inclusive to a pay-as-you-go model for advanced Copilot features is designed to foster a more responsible approach to usage and budget management amongst both individual devs and organizations. Developers are now encouraged to consider the cost implications of choosing different AI models and managing premium request allocation for their teams.
 
 This post appeared first on The Rob Bos. [Read the entire article here](https://devopsjournal.io/blog/2025/06/17/Copilot-premium-requests)
