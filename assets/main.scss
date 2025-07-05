@@ -352,14 +352,17 @@ html {
 .tag-filter-btn {
     margin: 2px;
     padding: 4px 8px;
-    border: 1px solid #ccc;
-    background: #f9f9f9;
+    border: 1px solid rgba(189, 147, 249, 0.3);
+    background: rgba(230, 232, 235, 0.1);
+    color: #e6e8eb;
     cursor: pointer;
     border-radius: 3px;
+    transition: all 0.2s ease;
 }
 
 .tag-filter-btn:hover {
-    background: #e9e9e9;
+    background: rgba(189, 147, 249, 0.2);
+    border-color: rgba(189, 147, 249, 0.5);
 }
 
 .tag-filter-btn.active {
@@ -369,8 +372,10 @@ html {
 }
 
 .tag-filter-btn.disabled {
-    opacity: 0.5;
+    opacity: 0.3;
     cursor: not-allowed;
+    background: rgba(50, 50, 50, 0.2);
+    border-color: rgba(100, 100, 100, 0.3);
 }
 
 .tag-filter-btn.clear-btn {
@@ -409,12 +414,28 @@ html {
 }
 
 .tag-filter-btn.single-tag-btn.disabled {
-    opacity: 0.5;
+    opacity: 0.25;
     cursor: not-allowed;
+    background: rgba(30, 30, 30, 0.3);
+    border-color: rgba(80, 80, 80, 0.4);
+}
+
+// Tag filter button visibility
+.tag-filter-btn {
+    display: inline-block; /* Show all buttons by default */
+}
+
+.tag-filter-btn.single-tag-btn {
+    display: none; /* Hide single-occurrence tags by default */
+}
+
+.tag-filter-btn.single-tag-btn.show {
+    display: inline-block; /* Show single-occurrence tags when 'More' is clicked */
 }
 
 .date-filter-btn {
-    background: rgba(224, 202, 255, 0.9)
+    background: rgba(189, 147, 249, 0.4);
+    border-color: rgba(189, 147, 249, 0.4);
 }
 
 .date-filter-btn:hover {

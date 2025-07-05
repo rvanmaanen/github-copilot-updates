@@ -5,7 +5,7 @@ description: "Copilot Edits allows you to get to the changes you need in your wo
 author: "Isidor Nikolic"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://code.visualstudio.com/blogs/2024/11/12/introducing-copilot-edits"
-tags: "blog VS_Code Visual_Studio_Code news"
+tags: [blog, VS Code, Visual Studio Code, news]
 feed_name: "VS Code Blog"
 feed_url: "https://code.visualstudio.com/feed.xml"
 ---

@@ -5,7 +5,7 @@ description: "Learn how to build your first space in minutes and customize Copil
 author: "Andrea Griffiths"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/ai-and-ml/github-copilot/github-copilot-spaces-bring-the-right-context-to-every-suggestion/"
-tags: "AI_&_ML GitHub_Copilot GitHub_Copilot_Spaces GitHub news"
+tags: [AI & ML, GitHub Copilot, GitHub Copilot Spaces, GitHub, news]
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---

@@ -5,7 +5,7 @@ description: "Today, I’m thrilled to share that we’ve hit an incredible mile
 author: "Amanda Silver"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://devblogs.microsoft.com/blog/celebrating-50-million-developers-the-journey-of-visual-studio-and-visual-studio-code"
-tags: "Visual_Studio Community Visual_Studio_Code Microsoft news"
+tags: [Visual Studio, Community, Visual Studio Code, Microsoft, news]
 feed_name: "Microsoft Developer Blog"
 feed_url: "https://devblogs.microsoft.com/feed/"
 ---

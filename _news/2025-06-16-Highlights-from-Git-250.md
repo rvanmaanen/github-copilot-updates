@@ -5,7 +5,7 @@ description: "The open source Git project just released Git 2.50. Here is GitHub
 author: "Taylor Blau"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/open-source/git/highlights-from-git-2-50/"
-tags: "Git Open_Source GitHub news"
+tags: [Git, Open Source, GitHub, news]
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---

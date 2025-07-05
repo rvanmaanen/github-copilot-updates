@@ -5,7 +5,7 @@ description: "Introducing GitHub Copilot for Azure, a chat participant to ask ab
 author: "Chris Harris"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://code.visualstudio.com/blogs/2024/11/15/introducing-github-copilot-for-azure"
-tags: "blog VS_Code Visual_Studio_Code news"
+tags: [blog, VS Code, Visual Studio Code, news]
 feed_name: "VS Code Blog"
 feed_url: "https://code.visualstudio.com/feed.xml"
 ---

@@ -5,7 +5,7 @@ description: "Use these insights to automate software security (where possible) 
 author: "Jonathan Evans"
 excerpt_separator: <!--excerpt_end-->
 canonical_url: "https://github.blog/security/github-advisory-database-by-the-numbers-known-security-vulnerabilities-and-what-you-can-do-about-them/"
-tags: "Security CNA Community_Contribution CVE CVE_Numbering_Authority CVSS CWE EPSS GitHub_Security_Lab open_source_security GitHub"
+tags: [Security, CNA, Community Contribution, CVE, CVE Numbering Authority, CVSS, CWE, EPSS, GitHub Security Lab, open source security, GitHub]
 feed_name: "GitHub Blog"
 feed_url: "https://github.blog/feed/"
 ---

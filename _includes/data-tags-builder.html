@@ -1,2 +1,9 @@
-{%- assign all_tags = post.tags | join: ',' | downcase | replace: '_', ' ' | escape -%}
+{%- comment -%} Build data-tags attribute for filtering {%- endcomment -%}
+{%- if post.tags.first -%}
+  {%- comment -%} Tags is an array (YAML format) {%- endcomment -%}
+  {%- assign all_tags = post.tags | join: ',' | downcase | replace: '_', ' ' | escape -%}
+{%- else -%}
+  {%- comment -%} Tags is a string (space-separated) {%- endcomment -%}
+  {%- assign all_tags = post.tags | downcase | replace: '_', ' ' | replace: ' ', ',' | escape -%}
+{%- endif -%}
 {%- assign post_date_iso = post.date | date: '%Y-%m-%d' -%}
